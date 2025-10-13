@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-void proteinBarM(BuildContext context, String message, {IconData?  icon,Color backgroundColor = Colors.black87,int duration = 3}) {
+void proteinBarM(BuildContext context, String message, {IconData?  icon,Color backgroundColor = Colors.black87,Color iconColor = Colors.blueGrey,int duration = 3}) {
   final overlay = Overlay.of(context);
   late OverlayEntry overlayEntry;
   overlayEntry = OverlayEntry(
@@ -31,12 +31,12 @@ void proteinBarM(BuildContext context, String message, {IconData?  icon,Color ba
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (icon != null) ...[
-                      Icon(icon, color: Colors.white, size: 18),
+                      Icon(icon, color: iconColor, size: 18),
                       const SizedBox(width: 6),
                     ],
                     Text(
                       message,
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ],
                 ),

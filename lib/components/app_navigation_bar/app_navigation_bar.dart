@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 class AppNavigationBar extends StatefulWidget {
   const AppNavigationBar({super.key});
@@ -29,8 +30,8 @@ class _AppNavigationBarState extends State<AppNavigationBar> {
           ),
           child: BottomNavigationBar(
             items: [
-              BottomNavigationBarItem(icon: Icon(Icons.home_outlined),label: 'Generate'),
-              BottomNavigationBarItem(icon: Icon(Icons.lock_outline),label: 'Saved'),
+              BottomNavigationBarItem(icon: Icon(LucideIcons.home),label: 'Generate'),
+              BottomNavigationBarItem(icon: Icon(LucideIcons.lock),label: 'Saved'),
             ],
             selectedItemColor: Colors.black,
             currentIndex: _selectedIndex,

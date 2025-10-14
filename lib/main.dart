@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home_page/save_screen.dart';
+import 'package:test_group_project/save_screen/save_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -8,9 +8,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: const HomePage());
+    return MaterialApp(
+        home: const SaveScreen()
+    );
   }
 }

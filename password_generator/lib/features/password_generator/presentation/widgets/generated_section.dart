@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:password_generator/features/password_generator/data/repositories/password_repository.dart';
 import 'package:password_generator/shared/widgets/protein_bar.dart';
 
 class GeneratedSection extends StatefulWidget {
@@ -29,14 +31,14 @@ class _GeneratedSectionState extends State<GeneratedSection> {
   @override
   void initState() {
     super.initState();
-    _passwordController = TextEditingController(text: widget.password);
+    _passwordController = TextEditingController(text: widget.password); // ✅ widget burada
   }
 
   @override
   void didUpdateWidget(GeneratedSection oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.password != oldWidget.password && !_isEditing) {
-      _passwordController.text = widget.password;
+    if (widget.password != oldWidget.password && !_isEditing) { // ✅ widget burada
+      _passwordController.text = widget.password; // ✅ widget burada
     }
   }
 
@@ -50,19 +52,53 @@ class _GeneratedSectionState extends State<GeneratedSection> {
     setState(() {
       _isEditing = !_isEditing;
       if (!_isEditing) {
-        widget.onPasswordChanged(_passwordController.text);
+        widget.onPasswordChanged(_passwordController.text); // ✅ widget burada
       }
     });
   }
 
   void _handleCopy() {
-    widget.onCopy();
+    Clipboard.setData(ClipboardData(text: widget.password)); // ✅ widget burada
     proteinBarM(context, "Copied Password", icon: Icons.check_outlined);
+
+    // Opsiyonel: Üst componente de haber ver
+    widget.onCopy(); // ✅ widget burada
   }
 
-  void _handleSave() {
-    widget.onSave();
-    proteinBarM(context, "Password Saved!", icon: Icons.check_outlined);
+  void _handleSave() async {
+    try {
+      final PasswordRepository repository = PasswordRepository();
+
+      await repository.saveNewPassword(
+        password: widget.password, // ✅ widget burada
+        nickname: widget.nicknameController.text, // ✅ widget burada
+      );
+
+      // Başarılı mesajı göster
+      proteinBarM(
+        context,
+        widget.nicknameController.text.isEmpty // ✅ widget burada
+            ? "Password Saved!"
+            : "Password '${widget.nicknameController.text}' Saved!", // ✅ widget burada
+        icon: Icons.check_outlined,
+      );
+
+      // Input'ları temizle
+      widget.nicknameController.clear(); // ✅ widget burada
+
+      // Üst componente haber ver (opsiyonel)
+      widget.onSave(); // ✅ widget burada
+
+    } catch (e) {
+      // Hata mesajı göster
+      proteinBarM(
+        context,
+        "Save Failed!",
+        icon: Icons.error_outline,
+        backgroundColor: Colors.red,
+      );
+      print('Save error: $e');
+    }
   }
 
   @override
@@ -128,7 +164,7 @@ class _GeneratedSectionState extends State<GeneratedSection> {
               border: InputBorder.none,
               contentPadding: EdgeInsets.zero,
             ),
-            onChanged: widget.onPasswordChanged,
+            onChanged: widget.onPasswordChanged, // ✅ widget burada
           )
               : GestureDetector(
             onTap: _toggleEdit,
@@ -148,7 +184,7 @@ class _GeneratedSectionState extends State<GeneratedSection> {
             "Editing mode - Click ✓ to save changes",
             style: TextStyle(
               fontSize: 12,
-              color: Colors.grey,
+              color: Colors.blue,
               fontStyle: FontStyle.italic,
             ),
           ),
@@ -165,7 +201,7 @@ class _GeneratedSectionState extends State<GeneratedSection> {
         ),
         const SizedBox(height: 8),
         TextField(
-          controller: widget.nicknameController,
+          controller: widget.nicknameController, // ✅ widget burada
           decoration: InputDecoration(
             hintText: "Enter a nickname for this password",
             filled: true,

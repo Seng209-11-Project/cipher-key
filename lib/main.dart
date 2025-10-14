@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'home_page/home_page.dart';
+import 'package:test_group_project/components/app_navigation_bar/app_navigation_bar.dart';
+import 'package:test_group_project/protein_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -8,11 +9,19 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const HomePage()
+      home: Scaffold(
+        bottomNavigationBar: AppNavigationBar(),
+        body: Center(
+          child: GestureDetector(
+            onTap: () {
+              proteinBarM(context, "Copied Password",icon: Icons.check_outlined);
+            },
+          ),
+        ),
+      )
     );
   }
 }

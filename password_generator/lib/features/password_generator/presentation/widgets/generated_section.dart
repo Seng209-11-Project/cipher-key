@@ -1,0 +1,245 @@
+import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
+import 'package:password_generator/shared/widgets/protein_bar.dart';
+
+class GeneratedSection extends StatefulWidget {
+  final String password;
+  final VoidCallback onCopy;
+  final VoidCallback onSave;
+  final TextEditingController nicknameController;
+  final ValueChanged<String> onPasswordChanged;
+
+  const GeneratedSection({
+    super.key,
+    required this.password,
+    required this.onCopy,
+    required this.onSave,
+    required this.nicknameController,
+    required this.onPasswordChanged,
+  });
+
+  @override
+  State<GeneratedSection> createState() => _GeneratedSectionState();
+}
+
+class _GeneratedSectionState extends State<GeneratedSection> {
+  late TextEditingController _passwordController;
+  bool _isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordController = TextEditingController(text: widget.password);
+  }
+
+  @override
+  void didUpdateWidget(GeneratedSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.password != oldWidget.password && !_isEditing) {
+      _passwordController.text = widget.password;
+    }
+  }
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _toggleEdit() {
+    setState(() {
+      _isEditing = !_isEditing;
+      if (!_isEditing) {
+        widget.onPasswordChanged(_passwordController.text);
+      }
+    });
+  }
+
+  void _handleCopy() {
+    widget.onCopy();
+    proteinBarM(context, "Copied Password", icon: Icons.check_outlined);
+  }
+
+  void _handleSave() {
+    widget.onSave();
+    proteinBarM(context, "Password Saved!", icon: Icons.check_outlined);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 24),
+        const Divider(),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              "Generated Password",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            IconButton(
+              onPressed: _toggleEdit,
+              icon: Icon(
+                _isEditing ? Icons.check : Icons.edit,
+                size: 20,
+                color: Colors.black,
+              ),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+
+        if (!_isEditing) ...[
+          const Text(
+            "Tap the password field or edit button to customize",
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
+
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: _isEditing
+              ? TextField(
+            controller: _passwordController,
+            style: const TextStyle(
+              fontSize: 16,
+              letterSpacing: 1,
+            ),
+            maxLines: 1,
+            decoration: const InputDecoration(
+              isDense: true,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
+            ),
+            onChanged: widget.onPasswordChanged,
+          )
+              : GestureDetector(
+            onTap: _toggleEdit,
+            child: Text(
+              _passwordController.text,
+              style: const TextStyle(
+                fontSize: 16,
+                letterSpacing: 1,
+              ),
+            ),
+          ),
+        ),
+
+        if (_isEditing) ...[
+          const SizedBox(height: 8),
+          const Text(
+            "Editing mode - Click ✓ to save changes",
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
+
+        const SizedBox(height: 20),
+        const Text(
+          "Nickname (optional)",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: widget.nicknameController,
+          decoration: InputDecoration(
+            hintText: "Enter a nickname for this password",
+            filled: true,
+            fillColor: Colors.grey.shade100,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 14,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Colors.grey.shade300,
+                width: 1,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Colors.grey.shade300,
+                width: 1,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          "Give this password a memorable name",
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.grey,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton.icon(
+              onPressed: _handleCopy,
+              icon: const Icon(LucideIcons.copy, size: 18),
+              label: const Text("Copy"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                side: BorderSide(color: Colors.grey.shade300),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            ElevatedButton.icon(
+              onPressed: _handleSave,
+              icon: const Icon(LucideIcons.save, size: 18),
+              label: const Text("Save"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                side: BorderSide(color: Colors.grey.shade300),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:password_generator/pages/password_generator_page.dart';
+import 'package:password_generator/features/password_generator/presentation/pages/password_generator_page.dart';
 
 void main() {
   runApp(const PasswordGeneratorApp());

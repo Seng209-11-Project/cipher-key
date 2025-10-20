@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_group_project/save_screen/save_screen.dart';
 <<<<<<< HEAD
 import 'home_page/home_page.dart';
 =======
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         home: const SaveScreen()
 >>>>>>> feature/save_screen
+        home: const SaveScreen()
     );
   }
 }

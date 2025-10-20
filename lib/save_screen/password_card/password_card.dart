@@ -4,7 +4,6 @@ import 'package:test_group_project/save_screen/password_card/square_outlined_but
 
 class PasswordCard extends StatelessWidget {
   final String password;
-  const PasswordCard({super.key, required this.password});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,7 +19,6 @@ class PasswordCard extends StatelessWidget {
           Row(children: [
             Icon(LucideIcons.edit, size: 18, color: Colors.grey[600]),
             const SizedBox(width: 8),
-            Text('Add Nickname', style: TextStyle(color: Colors.grey[600]))
           ]),
           const SizedBox(height: 12),
           Container(
@@ -35,13 +33,10 @@ class PasswordCard extends StatelessWidget {
                       fontSize: 18, fontWeight: FontWeight.bold))
           ),
           const SizedBox(height: 12),
-          Text('Length: ${password.length}  ·  Oct 13, 2025, 01:55 PM',
-              style: TextStyle(color: Colors.grey, fontSize: 14)),
           const SizedBox(height: 12),
           Row(children: [
             Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () {},
                   icon: const Icon(Icons.copy, size: 20),
                   label: const Text(
                     'Copy',
@@ -60,7 +55,6 @@ class PasswordCard extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             SquareOutlinedIconButton(icon: LucideIcons.star, onPressed: () {},),
-            SquareOutlinedIconButton(icon: LucideIcons.trash2, onPressed: () {})
           ])
         ],
       ),

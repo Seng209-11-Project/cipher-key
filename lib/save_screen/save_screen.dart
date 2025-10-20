@@ -10,11 +10,6 @@ class SaveScreen extends StatefulWidget {
 }
 
 class _SaveScreenState extends State<SaveScreen> {
-  final List<String> _savedPasswords = const [
-    'j=S@oZ&R2I, x',
-    'aV+!BTqB(Knv',
-    'NMaAdn{P0!wL',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +49,6 @@ class _SaveScreenState extends State<SaveScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    for (final password in _savedPasswords)
-                      PasswordCard(password: password),
                   ],
                 ),
               ),

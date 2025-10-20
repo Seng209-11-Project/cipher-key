@@ -5,6 +5,7 @@ import '../../utils/helpers.dart';
 import 'generated_section_actions.dart';
 import 'generated_section_styles.dart';
 import 'generated_section_widgets.dart';
+import 'package:test_group_project/save_screen/save_read_function.dart' show savePassword;
 
 class GeneratedSection extends StatefulWidget {
   final String password;
@@ -126,14 +127,18 @@ class _GeneratedSectionState extends State<GeneratedSection> {
             GeneratedSectionWidgets.buildActionButton(
                 LucideIcons.copy,
                 "Copy",
-                () => GeneratedSectionActions.copyPassword(
-                    context, _passwordController.text)),
+                () {
+                  copyButtonOnPressed(context, widget.password);
+                },
+            ),
             const SizedBox(width: 12),
             GeneratedSectionWidgets.buildActionButton(
                 LucideIcons.save,
                 "Save",
-                () => GeneratedSectionActions.savePassword(
-                    context, widget.nicknameController)),
+                    () {
+                  saveButtonOnPressed(context, widget.nicknameController, widget.password);
+                },
+            )
           ],
         ),
       ],

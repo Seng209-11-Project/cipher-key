@@ -62,3 +62,4 @@ void proteinBarM(
     if (overlayEntry.mounted) overlayEntry.remove();
   });
 }
+

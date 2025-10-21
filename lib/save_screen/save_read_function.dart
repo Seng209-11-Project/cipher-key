@@ -20,17 +20,13 @@ Future<void> deletePassword(String passwordName, String password) async {
   await storage.delete(key: passwordName);
 }
 
-// Delete password by ID (new method)
-Future<void> deletePasswordById(String passwordId) async {
-  await storage.delete(key: passwordId);
-}
 
 enum EditType {
   name,
   password
 }
 
-// Future<void> editPassword(EditType type,String oldName,{String newName = "",String newPassword = ""}) async{
-//   String passwordName = await storage.read(key: oldName);
-// }
+Future<void> editPassword(EditType type,String oldName,{String newName = "",String newPassword = ""}) async{
+  String? passwordName = await storage.read(key: oldName);
+}
 

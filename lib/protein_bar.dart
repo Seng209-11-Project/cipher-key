@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 
-void proteinBarM(BuildContext context, String message, {IconData?  icon,Color backgroundColor = Colors.black87,Color iconColor = Colors.blueGrey,int duration = 3}) {
+void proteinBarM(
+    BuildContext context,
+    String message, {
+      IconData? icon,
+      Color iconColor = Colors.white,
+      int duration = 3,
+    }) {
   final overlay = Overlay.of(context);
   late OverlayEntry overlayEntry;
+
   overlayEntry = OverlayEntry(
       builder: (context) => Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom > 0.0
-                ? MediaQuery.of(context).viewInsets.bottom + MediaQuery.of(context).size.height * 0.05
+                ? MediaQuery.of(context).viewInsets.bottom +
+                MediaQuery.of(context).size.height * 0.05
                 : MediaQuery.of(context).size.height * 0.125,
           ),
           child: GestureDetector(
@@ -21,9 +29,10 @@ void proteinBarM(BuildContext context, String message, {IconData?  icon,Color ba
             child: Material(
               color: Colors.transparent,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: backgroundColor,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(500),
                 ),
                 child: Row(
@@ -36,7 +45,8 @@ void proteinBarM(BuildContext context, String message, {IconData?  icon,Color ba
                     ],
                     Text(
                       message,
-                      style: const TextStyle(fontSize: 14),
+                      style:  TextStyle(
+                          fontSize: 14, color: Theme.of(context).colorScheme.primary),
                     ),
                   ],
                 ),
@@ -44,14 +54,11 @@ void proteinBarM(BuildContext context, String message, {IconData?  icon,Color ba
             ),
           ),
         ),
-      )
-  );
+      ));
 
   overlay.insert(overlayEntry);
-
   Future.delayed(Duration(seconds: duration), () {
-    if (overlayEntry.mounted) {
-      overlayEntry.remove();
-    }
+    if (overlayEntry.mounted) overlayEntry.remove();
   });
 }
+

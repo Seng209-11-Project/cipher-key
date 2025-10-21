@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:password_generator/app_navigation_bar/app_navigation_bar.dart';
-import 'package:password_generator/app_theme/theme_provider.dart';
-import 'package:password_generator/generate_screen/pages/password_generator_page.dart';
-import 'package:password_generator/save_screen/save_screen.dart';
 import 'package:provider/provider.dart';
+import 'app_navigation_bar/app_navigation_bar.dart';
 import 'app_theme/app_theme.dart';
+import 'app_theme/theme_provider.dart';
 
 ValueNotifier<int> selectedIndex = ValueNotifier(0);
-bool isDark = false;
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -22,9 +19,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: AppThemes.light,
-        darkTheme: AppThemes.dark,
-        themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        //themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
         home: ManagementWidget()
     );
   }
@@ -32,8 +29,8 @@ class MyApp extends StatelessWidget {
 
 class ManagementWidget extends StatelessWidget {
   final List<Widget> _pages = [
-    const PasswordGeneratorPage(),
-    const SaveScreen(),
+    //const PasswordGeneratorPage(),
+    //const SaveScreen(),
     //const SettingsPage(),
   ];
 

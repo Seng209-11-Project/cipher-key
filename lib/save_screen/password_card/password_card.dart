@@ -5,11 +5,12 @@ import 'package:password_generator/save_screen/password_card/square_outlined_but
 import 'package:password_generator/generate_screen/widgets/protein_bar.dart';
 import 'package:password_generator/save_screen/save_read_function.dart';
 
-class PasswordCard extends StatelessWidget {
+class PasswordCard extends StatefulWidget {
   final String password;
   final String passwordName;
   final String passwordDateTime;
   final String passwordId;
+  final VoidCallback? onDeleted;  // Add this
 
   const PasswordCard({
     super.key,
@@ -17,11 +18,77 @@ class PasswordCard extends StatelessWidget {
     required this.passwordName,
     required this.passwordDateTime,
     required this.passwordId,
+    this.onDeleted,  // Add this
   });
 
+  @override
+  _PasswordCardState createState() => _PasswordCardState();
+}
+
+class _PasswordCardState extends State<PasswordCard> {
+  bool _isEditingPassword = false;
+  bool _isEditingNickname = false;
+  bool _isFavorite = false;
+  String _cleanPassword = "";
+  late TextEditingController _passwordController;
+  late TextEditingController _nicknameController;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = widget.password.startsWith("⭐");
+    _cleanPassword = _isFavorite ? widget.password.substring(1) : widget.password;
+    _passwordController = TextEditingController(text: _cleanPassword);
+    _nicknameController = TextEditingController(text: widget.passwordName);
+  }
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    _nicknameController.dispose();
+    super.dispose();
+  }
+
   void _copyPassword(BuildContext context) {
-    Clipboard.setData(ClipboardData(text: password));
+    Clipboard.setData(ClipboardData(text: _cleanPassword));
     proteinBarM(context, "Password Copied!", icon: Icons.check_outlined);
+  }
+
+  Future<void> _toggleFavorite() async {
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
+    await editPassword(EditType.favorite, widget.passwordId, isFavorite: _isFavorite);
+    if (!mounted) return;
+    proteinBarM(
+      context,
+      _isFavorite ? "Added to Favorites!" : "Removed from Favorites!",
+      icon: _isFavorite ? Icons.star : Icons.star_border,
+    );
+  }
+
+  void _togglePasswordEdit() {
+    setState(() {
+      _isEditingPassword = !_isEditingPassword;
+    });
+  }
+
+  void _savePasswordEdit() {
+    setState(() {
+      _isEditingPassword = false;
+    });
+  }
+
+  void _toggleNicknameEdit() {
+    setState(() {
+      _isEditingNickname = !_isEditingNickname;
+    });
+  }
+
+  void _saveNicknameEdit() {
+    setState(() {
+      _isEditingNickname = false;
+    });
   }
 
   @override
@@ -43,50 +110,132 @@ class PasswordCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    passwordName,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  // Nickname section with buttons OUTSIDE and black outline when editing
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Length: ${password.length}",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[500],
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8),
+                            border: _isEditingNickname 
+                                ? Border.all(color: Colors.black, width: 2.0)  // BLACK outline when editing
+                                : null,
+                          ),
+                          child: _isEditingNickname
+                              ? TextField(
+                                  controller: _nicknameController,
+                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                                  decoration: const InputDecoration(
+                                    isDense: true,
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
+                                  autofocus: true,
+                                )
+                              : GestureDetector(
+                                  onTap: _toggleNicknameEdit,
+                                  child: Text(
+                                    widget.passwordName,
+                                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                                  ),
+                                ),
                         ),
                       ),
-                      Text(
-                        passwordDateTime,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[500],
+                      // Buttons OUTSIDE the field, positioned in front
+                      if (_isEditingNickname) ...[
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: const Icon(Icons.check, size: 18, color: Colors.black),
+                          onPressed: _saveNicknameEdit,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
                         ),
-                      ),
+                        IconButton(
+                          icon: const Icon(Icons.close, size: 18, color: Colors.black),
+                          onPressed: _toggleNicknameEdit,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+                      ],
                     ],
                   ),
+                  // Removed top length/time row (shown below password)
                 ],
               ),
             ),
           ]),
           const SizedBox(height: 12),
-          Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-              decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(8)),
-              child: Text
-                (password,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold))
+          // Password section with buttons OUTSIDE and black outline when editing
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
+                    border: _isEditingPassword 
+                        ? Border.all(color: Colors.black, width: 2.0)  // BLACK outline when editing
+                        : null,
+                  ),
+                  child: _isEditingPassword
+                      ? TextField(
+                          controller: _passwordController,
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          decoration: const InputDecoration(
+                            isDense: true,
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                          autofocus: true,
+                        )
+                      : GestureDetector(
+                          onTap: _togglePasswordEdit,
+                          child: Text(
+                            _passwordController.text,
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                ),
+              ),
+              // Buttons OUTSIDE the field, positioned in front
+              if (_isEditingPassword) ...[
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: const Icon(Icons.check, size: 18, color: Colors.black),
+                  onPressed: _savePasswordEdit,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 18, color: Colors.black),
+                  onPressed: _togglePasswordEdit,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+              ],
+            ],
           ),
           const SizedBox(height: 12),
+          // Move length • time under password (Length on left)
+          Row(
+            children: [
+              Text(
+                "Length: ${_passwordController.text.length}",
+                style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+              ),
+              const SizedBox(width: 4),
+              Text("•", style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+              const SizedBox(width: 4),
+              Text(
+                widget.passwordDateTime,
+                style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+              ),
+            ],
+          ),
           const SizedBox(height: 12),
           Row(children: [
             Expanded(
@@ -110,8 +259,15 @@ class PasswordCard extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             SquareOutlinedIconButton(
+              icon: LucideIcons.star,
+              onPressed: _toggleFavorite,
+              iconColor: _isFavorite ? Colors.amber : Colors.black,
+            ),
+            const SizedBox(width: 8),
+            SquareOutlinedIconButton(
               icon: LucideIcons.trash2, 
               onPressed: () => _deletePassword(context),
+              iconColor: Colors.red,
             ),
           ])
         ],
@@ -119,24 +275,32 @@ class PasswordCard extends StatelessWidget {
     );
   }
 
-  void _deletePassword(BuildContext context) {
+  void _deletePassword(BuildContext context) async {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text('Delete Password'),
-          content: Text('Are you sure you want to delete this password?'),
+          title: const Text('Delete Password'),
+          content: const Text('Are you sure you want to delete this password?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'),
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () async {
-                Navigator.of(context).pop();
-                proteinBarM(context, "Password Deleted!", icon: Icons.delete_outline);
+                Navigator.of(dialogContext).pop();
+                // Add this line to actually delete the password:
+                await deletePassword(widget.passwordId, widget.password);
+                if (context.mounted) {
+                  proteinBarM(context, "Password Deleted!", icon: Icons.delete_outline);
+                  // Add callback to refresh the list
+                  if (widget.onDeleted != null) {
+                    widget.onDeleted!();
+                  }
+                }
               },
-              child: Text('Delete', style: TextStyle(color: Colors.red)),
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
             ),
           ],
         );

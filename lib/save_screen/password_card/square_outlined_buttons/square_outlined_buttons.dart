@@ -4,11 +4,13 @@ import '../../../generate_screen/utils/helpers.dart'; // Doğru import
 class SquareOutlinedIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
+  final Color? iconColor;
 
   const SquareOutlinedIconButton({
     super.key,
     required this.icon,
     required this.onPressed,
+    this.iconColor,
   });
 
   @override
@@ -20,7 +22,7 @@ class SquareOutlinedIconButton extends StatelessWidget {
       ),
       child: IconButton(
         onPressed: onPressed,
-        icon: Icon(icon, size: 20),
+        icon: Icon(icon, size: 20, color: iconColor),
         padding: const EdgeInsets.all(12),
         constraints: const BoxConstraints(),
         style: IconButton.styleFrom(

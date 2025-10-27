@@ -1,32 +1,23 @@
 import 'package:flutter/material.dart';
 
-class SortButton extends StatefulWidget {
-  const SortButton({super.key});
+class SortButton extends StatelessWidget {
+  final String currentSortOption;
+  final ValueChanged<String> onSortChanged;
 
-  @override
-  State<SortButton> createState() => _SortButtonState();
-}
+  const SortButton({super.key, required this.currentSortOption, required this.onSortChanged});
 
-class _SortButtonState extends State<SortButton> {
   @override
   Widget build(BuildContext context) {
-    String currentSortOption = 'Latest';
     return PopupMenuButton<String>(
-      onSelected: (String newValue) {
-        setState(() {
-          currentSortOption = newValue;
-        });
-      },
+      onSelected: onSortChanged,
       color: Colors.white,
       position: PopupMenuPosition.over,
       offset: const Offset(0, -215),
-
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5.0),
         side: BorderSide(color: Colors.grey[300]!, width: 1.0),
       ),
       elevation: 4,
-
       child: OutlinedButton(
         onPressed: null,
         style: OutlinedButton.styleFrom(
@@ -48,14 +39,11 @@ class _SortButtonState extends State<SortButton> {
         ),
       ),
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        const PopupMenuItem<String>(
-            value: 'Latest', child: Text('Latest First')),
-        const PopupMenuItem<String>(
-            value: 'Oldest', child: Text('Oldest First')),
-        const PopupMenuItem<String>(
-            value: 'By Password', child: Text('By Password (A-Z)')),
-        const PopupMenuItem<String>(
-            value: 'By Nickname', child: Text('By Nickname (A-Z)')),
+        const PopupMenuItem<String>(value: 'Latest', child: Text('Latest First')),
+        const PopupMenuItem<String>(value: 'Oldest', child: Text('Oldest First')),
+        const PopupMenuItem<String>(value: 'By Password', child: Text('By Password (A-Z)')),
+        const PopupMenuItem<String>(value: 'By Nickname', child: Text('By Nickname (A-Z)')),
+        const PopupMenuItem<String>(value: 'Favorites', child: Text('Favorites First')),
       ],
     );
   }

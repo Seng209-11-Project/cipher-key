@@ -66,7 +66,6 @@ class _PasswordGeneratorPageState extends State<PasswordGeneratorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // ❌ BUNU SİL: bottomNavigationBar: const AppNavigationBar(currentIndex: 0),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(

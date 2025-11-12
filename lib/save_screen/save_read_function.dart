@@ -4,9 +4,6 @@ AndroidOptions _getAndroidOptions() => const AndroidOptions(encryptedSharedPrefe
 
 final storage = FlutterSecureStorage(aOptions: _getAndroidOptions());
 
-
-
-
 Future<void> savePassword(String passwordName, String password) async {
   await storage.write(key: passwordName, value: password);
 }

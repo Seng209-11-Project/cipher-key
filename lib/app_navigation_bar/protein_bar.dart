@@ -12,10 +12,12 @@ void proteinBarM(
   final overlay = Overlay.of(context);
   late OverlayEntry overlayEntry;
 
-  // ✅ THEME'A GÖRE RENKLER - FIXED
-  final bgColor = backgroundColor ?? Theme.of(context).colorScheme.surface;
-  final txtColor = textColor ?? Theme.of(context).colorScheme.onSurface;
-  final icnColor = iconColor ?? Theme.of(context).colorScheme.onSurface;
+  final cs = Theme.of(context).colorScheme;
+
+  // THEMED COLORS
+  final bgColor = backgroundColor ?? cs.surface;
+  final txtColor = textColor ?? cs.onSurface;
+  final icnColor = iconColor ?? cs.onSurface;
 
   overlayEntry = OverlayEntry(
     builder: (context) => Align(
@@ -38,11 +40,13 @@ void proteinBarM(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: bgColor, // ✅ DYNAMIC BACKGROUND
+                color: bgColor,
                 borderRadius: BorderRadius.circular(500),
+
+                // ✔ THEMED SHADOW FOR DARK MODE
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: cs.primary.withOpacity(0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -53,14 +57,14 @@ void proteinBarM(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (icon != null) ...[
-                    Icon(icon, color: icnColor, size: 18), // ✅ DYNAMIC ICON COLOR
+                    Icon(icon, color: icnColor, size: 18),
                     const SizedBox(width: 6),
                   ],
                   Text(
                     message,
                     style: TextStyle(
                       fontSize: 14,
-                      color: txtColor, // ✅ DYNAMIC TEXT COLOR
+                      color: txtColor,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -74,6 +78,7 @@ void proteinBarM(
   );
 
   overlay.insert(overlayEntry);
+
   Future.delayed(Duration(seconds: duration), () {
     if (overlayEntry.mounted) overlayEntry.remove();
   });

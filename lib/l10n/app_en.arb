@@ -1,0 +1,87 @@
+{
+  "appTitle": "Password Generator App",
+
+  "navGenerate": "Generate",
+  "navSaved": "Saved",
+  "navSettings": "Settings",
+
+  "settingsTitle": "Settings",
+  "settingsSubtitle": "Customize your password manager",
+  "settingsAppearance": "Appearance",
+  "settingsSecurity": "Security",
+  "settingsPasswordGeneration": "Password Generation",
+  "settingsDataManagement": "Data Management",
+  "settingsLanguage": "Language",
+  "selectPreferredLanguage": "Select your preferred language",
+
+  "darkMode": "Dark Mode",
+  "switchToDarkTheme": "Switch to dark theme",
+  "switchToLightTheme": "Switch to light theme",
+
+  "requireFingerprint": "Require Fingerprint",
+  "fingerprintDescription": "Ask for fingerprint authentication on launch",
+
+  "charTypeInstructions": "Choose which character types to include",
+  "uppercase": "Uppercase Letters (A-Z)",
+  "lowercase": "Lowercase Letters (a-z)",
+  "numbers": "Numbers (0-9)",
+  "symbols": "Symbols (@#$%...)",
+
+  "deleteAllPasswordsHeader": "Permanently delete all saved passwords",
+  "deleteAllPasswords": "Delete All Passwords",
+  "deleteAllPasswordsDialogTitle": "Delete All Passwords?",
+  "deleteAllPasswordsDialogContent": "This will permanently delete {count} saved passwords.",
+  "cancel": "Cancel",
+  "deleteAll": "Delete All",
+  "noPasswordsToDelete": "No passwords to delete",
+  "allPasswordsDeleted": "Deleted every password!",
+  "authFailed": "Auth Failed",
+  "atLeastOneOptionRequired": "At least one option required",
+
+  "addNewPassword": "Add New Password",
+  "nickname": "Nickname",
+  "enterNickname": "Enter a nickname for this password",
+  "password": "Password",
+  "enterPassword": "Enter the password",
+  "save": "Save",
+  "pleaseEnterPassword": "Please enter a password",
+  "passwordSaved": "Password saved!",
+  "passwordSaveFailed": "Failed to save password",
+
+  "savedPasswordsTitle": "Saved Passwords",
+  "savedPasswordsSubtitle": "View and manage your saved passwords",
+  "noSavedPasswords": "No saved passwords yet",
+  "generateOrAddPasswords": "Generate or add passwords to see them here",
+
+  "sortLatest": "Latest",
+  "sortLatestFirst": "Latest First",
+  "sortOldest": "Oldest",
+  "sortOldestFirst": "Oldest First",
+  "sortByPassword": "By Password",
+  "sortByPasswordAZ": "By Password (A-Z)",
+  "sortByNickname": "By Nickname",
+  "sortByNicknameAZ": "By Nickname (A-Z)",
+
+  "copy": "Copy",
+  "passwordCopied": "Password Copied!",
+  "addedToFavorites": "Added to Favorites!",
+  "removedFromFavorites": "Removed from Favorites!",
+  "deletePassword": "Delete Password",
+  "confirmDeletePassword": "Are you sure you want to delete this password?",
+  "delete": "Delete",
+  "passwordDeleted": "Password Deleted!",
+
+  "length": "Length",
+  "editingPassword": "Editing password...",
+  "tapToEditPassword": "Tap to edit password",
+
+  "generatorTitle": "Password Generator",
+  "generatorSubtitle": "Create strong and secure passwords",
+  "passwordLength": "Password Length",
+  "generatePassword": "Generate Password",
+
+  "generatedPassword": "Generated Password",
+  "nicknameOptional": "Nickname (optional)",
+  "enterANickname": "Enter a nickname",
+  "giveNicknameMeaning": "Give this password a memorable name"
+}

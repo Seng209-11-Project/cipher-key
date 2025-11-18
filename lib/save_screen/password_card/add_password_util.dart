@@ -1,38 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:password_generator/save_screen/save_read_function.dart';
 import '../../app_navigation_bar/protein_bar.dart';
+import '../../l10n/app_localizations.dart';
 
 void showAddPasswordDialog(BuildContext context, {VoidCallback? onSaved}) {
   final TextEditingController nicknameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  final cs = Theme.of(context).colorScheme;
+  final t = AppLocalizations.of(context)!;
+
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: cs.surface, // THEMED
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-        title: const Text(
-          'Add New Password',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          t.addNewPassword,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: cs.primary,
+          ),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: nicknameController,
+              style: TextStyle(color: cs.primary),
               decoration: InputDecoration(
-                labelText: 'Nickname',
-                hintText: 'Enter a nickname for this password',
+                labelText: t.nickname,
+                labelStyle: TextStyle(color: cs.secondary),
+                hintText: t.enterNickname,
+                hintStyle: TextStyle(color: cs.secondary.withOpacity(0.7)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
+                  borderSide:
+                  BorderSide(color: cs.secondary.withOpacity(0.3)),
                 ),
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                  borderSide: BorderSide(color: Colors.black, width: 2),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: cs.primary, width: 2),
                 ),
               ),
             ),
@@ -40,16 +51,20 @@ void showAddPasswordDialog(BuildContext context, {VoidCallback? onSaved}) {
             TextField(
               controller: passwordController,
               obscureText: true,
+              style: TextStyle(color: cs.primary),
               decoration: InputDecoration(
-                labelText: 'Password',
-                hintText: 'Enter the password',
+                labelText: t.password,
+                labelStyle: TextStyle(color: cs.secondary),
+                hintText: t.enterPassword,
+                hintStyle: TextStyle(color: cs.secondary.withOpacity(0.7)),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
+                  borderSide:
+                  BorderSide(color: cs.secondary.withOpacity(0.3)),
                 ),
-                focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                  borderSide: BorderSide(color: Colors.black, width: 2),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: cs.primary, width: 2),
                 ),
               ),
             ),
@@ -60,7 +75,10 @@ void showAddPasswordDialog(BuildContext context, {VoidCallback? onSaved}) {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Cancel', style: TextStyle(color: Colors.black)),
+            child: Text(
+              t.cancel,
+              style: TextStyle(color: cs.primary),
+            ),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -70,7 +88,7 @@ void showAddPasswordDialog(BuildContext context, {VoidCallback? onSaved}) {
               if (password.isEmpty) {
                 proteinBarM(
                   context,
-                  'Please enter a password',
+                  t.pleaseEnterPassword,
                   icon: Icons.warning_amber_rounded,
                 );
                 return;
@@ -85,35 +103,32 @@ void showAddPasswordDialog(BuildContext context, {VoidCallback? onSaved}) {
 
                 await savePassword(passwordKey, password);
 
-                // FIRST refresh the SaveScreen
                 if (onSaved != null) onSaved();
-
-                // THEN close the dialog
                 Navigator.of(context).pop();
 
-                // THEN show success message
                 proteinBarM(
                   context,
-                  'Password saved!',
+                  t.passwordSaved,
                   icon: Icons.check_outlined,
                 );
               } catch (e) {
                 proteinBarM(
                   context,
-                  'Failed to save password',
+                  t.passwordSaveFailed,
                   icon: Icons.error_outline,
                 );
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
+              backgroundColor: cs.primary,
+              foregroundColor: cs.onPrimary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
-            child: const Text('Save'),
+            child: Text(t.save),
           ),
         ],
       );

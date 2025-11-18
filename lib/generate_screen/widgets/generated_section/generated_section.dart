@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-
+import '../../../l10n/app_localizations.dart';
 import '../../utils/helpers.dart';
 import 'generated_section_actions.dart';
 import 'generated_section_styles.dart';
@@ -29,6 +29,8 @@ class _GeneratedSectionState extends State<GeneratedSection> {
     'edit': false
   };
 
+  final FocusNode _passwordFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -43,42 +45,66 @@ class _GeneratedSectionState extends State<GeneratedSection> {
     }
   }
 
-  void _toggleEdit() => setState(() => _isEditing = !_isEditing);
+  void _toggleEdit() {
+    setState(() => _isEditing = !_isEditing);
 
-  void _cancelEdit() => setState(() {
-    _isEditing = false;
-    _passwordController.text = widget.password;
-  });
+    if (_isEditing) {
+      Future.delayed(const Duration(milliseconds: 50), () {
+        _passwordFocusNode.requestFocus();
+      });
+    }
+  }
+
+  void _cancelEdit() {
+    setState(() {
+      _isEditing = false;
+      _passwordController.text = widget.password;
+    });
+  }
 
   void _saveEdit() => setState(() => _isEditing = false);
 
-  void _handleHover(String type, bool hovering) => setState(() {
-    _hoverStates[type] = hovering;
-  });
+  void _handleHover(String type, bool hovering) =>
+      setState(() => _hoverStates[type] = hovering);
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final t = AppLocalizations.of(context)!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: 24),
-        const Divider(),
+        Divider(color: cs.secondary.withOpacity(0.3)),
         const SizedBox(height: 16),
-        const Text("Generated Password", style: headerTextStyle),
-        const SizedBox(height: 8),
+
         Text(
-          _isEditing ? "Editing password..." : "Tap to edit password",
-          style: TextStyle(
-              fontSize: 12,
-              color: _isEditing ? Colors.blue : Colors.grey,
-              fontStyle: FontStyle.italic),
+          t.generatedPassword,
+          style: headerTextStyle.copyWith(color: cs.primary),
         ),
         const SizedBox(height: 8),
+
+        Text(
+          _isEditing ? t.editingPassword : t.tapToEditPassword,
+          style: TextStyle(
+            fontSize: 12,
+            color: _isEditing ? cs.primary : cs.secondary,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.grey.shade100,
+            color: cs.surface.withOpacity(0.5),
             borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: cs.secondary.withOpacity(0.4),
+              width: 1.2,
+            ),
           ),
           child: Row(
             children: [
@@ -86,7 +112,8 @@ class _GeneratedSectionState extends State<GeneratedSection> {
                 child: _isEditing
                     ? TextField(
                   controller: _passwordController,
-                  style: passwordTextStyle,
+                  focusNode: _passwordFocusNode,
+                  style: passwordTextStyle.copyWith(color: cs.primary),
                   decoration: const InputDecoration(
                     isDense: true,
                     border: InputBorder.none,
@@ -95,10 +122,14 @@ class _GeneratedSectionState extends State<GeneratedSection> {
                 )
                     : GestureDetector(
                   onTap: _toggleEdit,
-                  child: Text(_passwordController.text,
-                      style: passwordTextStyle),
+                  child: Text(
+                    _passwordController.text,
+                    style:
+                    passwordTextStyle.copyWith(color: cs.primary),
+                  ),
                 ),
               ),
+
               GeneratedSectionWidgets.buildEditButtons(
                 isEditing: _isEditing,
                 hoverStates: _hoverStates,
@@ -110,34 +141,45 @@ class _GeneratedSectionState extends State<GeneratedSection> {
             ],
           ),
         ),
+
         const SizedBox(height: 20),
-        const Text("Nickname (optional)", style: headerTextStyle),
+
+        Text(
+          t.nicknameOptional,
+          style: headerTextStyle.copyWith(color: cs.primary),
+        ),
         const SizedBox(height: 8),
+
         TextField(
           controller: widget.nicknameController,
-          decoration: buildInputDecoration("Enter a nickname"),
+          decoration: buildInputDecoration(t.enterANickname, context),
         ),
+
         const SizedBox(height: 4),
-        const Text("Give this password a memorable name", style: hintTextStyle),
+        Text(
+          t.giveNicknameMeaning,
+          style: hintTextStyle.copyWith(color: cs.secondary),
+        ),
         const SizedBox(height: 16),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             GeneratedSectionWidgets.buildActionButton(
               LucideIcons.copy,
-              "Copy",
-                  () {
-                copyButtonOnPressed(context, widget.password);
-              },
+              t.copy,
+                  () => copyButtonOnPressed(context, widget.password),
+              context: context,
             ),
             const SizedBox(width: 12),
+
             GeneratedSectionWidgets.buildActionButton(
               LucideIcons.save,
-              "Save",
-                  () {
-                saveButtonOnPressed(context, widget.nicknameController, widget.password);
-              },
-            )
+              t.save,
+                  () => saveButtonOnPressed(
+                  context, widget.nicknameController, widget.password),
+              context: context,
+            ),
           ],
         ),
       ],

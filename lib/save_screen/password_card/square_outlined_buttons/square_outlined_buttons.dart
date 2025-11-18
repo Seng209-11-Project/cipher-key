@@ -14,20 +14,29 @@ class SquareOutlinedIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[300]!),
+        border: Border.all(
+          color: cs.secondary.withOpacity(0.3),    // THEMED
+        ),
         borderRadius: BorderRadius.circular(8),
       ),
       child: IconButton(
         onPressed: onPressed,
-        icon: Icon(icon, size: 20, color: iconColor),
+        icon: Icon(
+          icon,
+          size: 20,
+          color: iconColor ?? cs.primary,          // THEMED
+        ),
         padding: const EdgeInsets.all(12),
         constraints: const BoxConstraints(),
         style: IconButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
+          backgroundColor: cs.surface,              // THEMED
         ),
       ),
     );

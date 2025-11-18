@@ -1,0 +1,87 @@
+{
+  "appTitle": "Şifre Oluşturucu Uygulaması",
+
+  "navGenerate": "Oluştur",
+  "navSaved": "Kaydedilenler",
+  "navSettings": "Ayarlar",
+
+  "settingsTitle": "Ayarlar",
+  "settingsSubtitle": "Şifre yöneticinizi özelleştirin",
+  "settingsAppearance": "Görünüm",
+  "settingsSecurity": "Güvenlik",
+  "settingsPasswordGeneration": "Şifre Oluşturma",
+  "settingsDataManagement": "Veri Yönetimi",
+  "settingsLanguage": "Dil",
+  "selectPreferredLanguage": "Terchih ettiğiniz dili seçin",
+
+  "darkMode": "Karanlık Mod",
+  "switchToDarkTheme": "Koyu temaya geç",
+  "switchToLightTheme": "Açık temaya geç",
+
+  "requireFingerprint": "Parmak İzi Gereksinimi",
+  "fingerprintDescription": "Uygulama açılışında parmak izi doğrulaması iste",
+
+  "charTypeInstructions": "Dahil edilecek karakter türlerini seçin",
+  "uppercase": "Büyük Harfler (A-Z)",
+  "lowercase": "Küçük Harfler (a-z)",
+  "numbers": "Rakamlar (0-9)",
+  "symbols": "Semboller (@#$%...)",
+
+  "deleteAllPasswordsHeader": "Tüm kayıtlı şifreleri kalıcı olarak sil",
+  "deleteAllPasswords": "Tüm Şifreleri Sil",
+  "deleteAllPasswordsDialogTitle": "Tüm Şifreler Silinsin mi?",
+  "deleteAllPasswordsDialogContent": "{count} kayıtlı şifre kalıcı olarak silinecek.",
+  "cancel": "İptal",
+  "deleteAll": "Tümünü Sil",
+  "noPasswordsToDelete": "Silinecek şifre yok",
+  "allPasswordsDeleted": "Tüm şifreler silindi!",
+  "authFailed": "Doğrulama Başarısız",
+  "atLeastOneOptionRequired": "En az bir seçenek gerekli",
+
+  "addNewPassword": "Yeni Şifre Ekle",
+  "nickname": "Takma Ad",
+  "enterNickname": "Bu şifre için bir takma ad girin",
+  "password": "Şifre",
+  "enterPassword": "Şifreyi girin",
+  "save": "Kaydet",
+  "pleaseEnterPassword": "Lütfen bir şifre girin",
+  "passwordSaved": "Şifre kaydedildi!",
+  "passwordSaveFailed": "Şifre kaydedilemedi",
+
+  "savedPasswordsTitle": "Kaydedilen Şifreler",
+  "savedPasswordsSubtitle": "Kayıtlı şifrelerinizi görüntüleyin ve yönetin",
+  "noSavedPasswords": "Henüz kayıtlı şifre yok",
+  "generateOrAddPasswords": "Görüntülemek için şifre oluşturun veya ekleyin",
+
+  "sortLatest": "En Yeni",
+  "sortLatestFirst": "Önce En Yeni",
+  "sortOldest": "En Eski",
+  "sortOldestFirst": "Önce En Eski",
+  "sortByPassword": "Şifreye Göre",
+  "sortByPasswordAZ": "Şifre (A-Z)",
+  "sortByNickname": "Takma Ad'a Göre",
+  "sortByNicknameAZ": "Takma Ad (A-Z)",
+
+  "copy": "Kopyala",
+  "passwordCopied": "Şifre Kopyalandı!",
+  "addedToFavorites": "Favorilere Eklendi!",
+  "removedFromFavorites": "Favorilerden Çıkarıldı!",
+  "deletePassword": "Şifreyi Sil",
+  "confirmDeletePassword": "Bu şifreyi silmek istediğinize emin misiniz?",
+  "delete": "Sil",
+  "passwordDeleted": "Şifre Silindi!",
+
+  "length": "Uzunluk",
+  "editingPassword": "Şifre düzenleniyor...",
+  "tapToEditPassword": "Düzenlemek için dokunun",
+
+  "generatorTitle": "Şifre Oluşturucu",
+  "generatorSubtitle": "Güçlü ve güvenli şifreler oluşturun",
+  "passwordLength": "Şifre Uzunluğu",
+  "generatePassword": "Şifre Oluştur",
+
+  "generatedPassword": "Oluşturulan Şifre",
+  "nicknameOptional": "Takma Ad (opsiyonel)",
+  "enterANickname": "Bir takma ad girin",
+  "giveNicknameMeaning": "Bu şifreye akılda kalıcı bir isim verin"
+}

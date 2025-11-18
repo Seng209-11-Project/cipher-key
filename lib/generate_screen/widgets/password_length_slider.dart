@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
+
 class PasswordLengthSlider extends StatelessWidget {
   final double value;
   final ValueChanged<double> onChanged;
@@ -12,19 +14,39 @@ class PasswordLengthSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Password Length",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        Text(
+          AppLocalizations.of(context)!.passwordLength,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: cs.primary, // THEMED
+          ),
         ),
         const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(value.toInt().toString(), style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
-            const Text("32", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
+            Text(
+              value.toInt().toString(),
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 15,
+                color: cs.primary, // THEMED
+              ),
+            ),
+            Text(
+              "32",
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 15,
+                color: cs.primary, // THEMED
+              ),
+            ),
           ],
         ),
         SliderTheme(
@@ -36,8 +58,8 @@ class PasswordLengthSlider extends StatelessWidget {
             value: value,
             min: 4,
             max: 32,
-            activeColor: Colors.black,
-            inactiveColor: Colors.grey.shade300,
+            activeColor: cs.primary, // THEMED
+            inactiveColor: cs.secondary.withOpacity(0.3), // THEMED
             onChanged: onChanged,
           ),
         ),

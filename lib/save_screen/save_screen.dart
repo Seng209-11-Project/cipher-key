@@ -3,6 +3,7 @@ import 'package:password_generator/save_screen/sort_button/sort_button.dart';
 import 'package:password_generator/save_screen/password_card/password_card.dart';
 import 'package:password_generator/save_screen/save_read_function.dart';
 import 'package:password_generator/save_screen/password_card/add_password_util.dart';
+import '../../l10n/app_localizations.dart';
 
 class SaveScreen extends StatefulWidget {
   const SaveScreen({super.key});
@@ -15,7 +16,6 @@ class _SaveScreenState extends State<SaveScreen> {
   Map<String, String> savedPasswords = {};
   String _currentSortOption = 'Latest';
 
-  /// 🔥 Add this method so other screens can refresh SaveScreen
   void refreshPasswords() {
     _loadPasswords();
   }
@@ -47,11 +47,13 @@ class _SaveScreenState extends State<SaveScreen> {
       RegExp(r"(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?");
       final match = datePattern.firstMatch(key);
       if (match == null) return 0;
+
       final day = int.tryParse(match.group(1) ?? '') ?? 1;
       final month = int.tryParse(match.group(2) ?? '') ?? 1;
       final year = int.tryParse(match.group(3) ?? '') ?? 1970;
       final hour = int.tryParse(match.group(4) ?? '0') ?? 0;
       final minute = int.tryParse(match.group(5) ?? '0') ?? 0;
+
       return DateTime(year, month, day, hour, minute).millisecondsSinceEpoch;
     }
 
@@ -76,27 +78,21 @@ class _SaveScreenState extends State<SaveScreen> {
     void sortGroup(List<MapEntry<String, String>> list) {
       switch (_currentSortOption) {
         case 'Oldest':
-          list.sort(
-                  (a, b) => parseDateSafe(a.key).compareTo(parseDateSafe(b.key)));
+          list.sort((a, b) => parseDateSafe(a.key).compareTo(parseDateSafe(b.key)));
           break;
         case 'Favorites':
-          list.sort(
-                  (a, b) => parseDateSafe(b.key).compareTo(parseDateSafe(a.key)));
+          list.sort((a, b) => parseDateSafe(b.key).compareTo(parseDateSafe(a.key)));
           break;
         case 'By Password':
-          list.sort((a, b) => cleanValue(a.value)
-              .toLowerCase()
-              .compareTo(cleanValue(b.value).toLowerCase()));
+          list.sort((a, b) => cleanValue(a.value).toLowerCase().compareTo(cleanValue(b.value).toLowerCase()));
           break;
         case 'By Nickname':
-          list.sort((a, b) => extractNickname(a.key)
-              .toLowerCase()
-              .compareTo(extractNickname(b.key).toLowerCase()));
+          list.sort((a, b) =>
+              extractNickname(a.key).toLowerCase().compareTo(extractNickname(b.key).toLowerCase()));
           break;
         case 'Latest':
         default:
-          list.sort(
-                  (a, b) => parseDateSafe(b.key).compareTo(parseDateSafe(a.key)));
+          list.sort((a, b) => parseDateSafe(b.key).compareTo(parseDateSafe(a.key)));
           break;
       }
     }
@@ -109,14 +105,17 @@ class _SaveScreenState extends State<SaveScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final t = AppLocalizations.of(context)!;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: cs.surface,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showAddPasswordDialog(context, onSaved: _loadPasswords);
         },
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: cs.primary,
+        foregroundColor: cs.onPrimary,
         child: const Icon(Icons.add, size: 28),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -130,25 +129,26 @@ class _SaveScreenState extends State<SaveScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding:
-                      EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    // ------------------ HEADER ------------------
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Saved Passwords',
+                            t.savedPasswordsTitle,
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
+                              color: cs.primary,
                             ),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(
-                            'View and manage your saved passwords',
+                            t.savedPasswordsSubtitle,
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.grey,
+                              color: cs.secondary,
                             ),
                           ),
                         ],
@@ -162,31 +162,29 @@ class _SaveScreenState extends State<SaveScreen> {
                       child: savedPasswords.isEmpty
                           ? Container(
                         width: double.infinity,
-                        padding:
-                        const EdgeInsets.symmetric(vertical: 40),
+                        padding: const EdgeInsets.symmetric(vertical: 40),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: cs.surface,
                           borderRadius: BorderRadius.circular(14),
-                          border:
-                          Border.all(color: Colors.grey.shade300),
+                          border: Border.all(color: cs.secondary.withOpacity(0.3)),
                         ),
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "No saved passwords yet",
+                              t.noSavedPasswords,
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.black87,
+                                color: cs.primary,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Text(
-                              "Generate or add passwords to see them here",
+                              t.generateOrAddPasswords,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey,
+                                color: cs.secondary,
                               ),
                             ),
                           ],
@@ -198,19 +196,13 @@ class _SaveScreenState extends State<SaveScreen> {
                           String passwordName = "";
                           String passwordDateTime = "";
 
-                          RegExp datePattern =
-                          RegExp(r'\d{1,2}/\d{1,2}/\d{4}');
-                          Match? dateMatch =
-                          datePattern.firstMatch(fullKey);
+                          RegExp datePattern = RegExp(r'\d{1,2}/\d{1,2}/\d{4}');
+                          Match? dateMatch = datePattern.firstMatch(fullKey);
 
                           if (dateMatch != null) {
                             int dateStartIndex = dateMatch.start;
-                            passwordName = fullKey
-                                .substring(0, dateStartIndex)
-                                .trim();
-                            passwordDateTime = fullKey
-                                .substring(dateStartIndex)
-                                .trim();
+                            passwordName = fullKey.substring(0, dateStartIndex).trim();
+                            passwordDateTime = fullKey.substring(dateStartIndex).trim();
                           } else {
                             passwordName = fullKey.trim();
                             passwordDateTime = "";
@@ -233,6 +225,7 @@ class _SaveScreenState extends State<SaveScreen> {
             ),
           ),
 
+          // ------------------ SORT BUTTON ------------------
           Align(
             alignment: Alignment.bottomLeft,
             child: Padding(

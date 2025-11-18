@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../utils/password_generator.dart';
 import '../widgets/password_length_slider.dart';
 import '../widgets/generated_section/generated_section.dart';
@@ -8,6 +9,20 @@ class PasswordGeneratorPage extends StatefulWidget {
 
   @override
   State<PasswordGeneratorPage> createState() => _PasswordGeneratorPageState();
+}
+
+final ScrollController scrollController = ScrollController();
+final GlobalKey myTargetKey = GlobalKey();
+
+void scrollToWidget() {
+  final context = myTargetKey.currentContext;
+  if (context == null) return;
+
+  Scrollable.ensureVisible(
+    context,
+    duration: const Duration(milliseconds: 500),
+    curve: Curves.easeInOut,
+  );
 }
 
 class _PasswordGeneratorPageState extends State<PasswordGeneratorPage> {
@@ -21,53 +36,86 @@ class _PasswordGeneratorPageState extends State<PasswordGeneratorPage> {
     showGeneratedSection = true;
   });
 
-  Widget _buildHeader() => const Column(
-    children: [
-      SizedBox(height: 20),
-      Text("Password Generator", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
-      SizedBox(height: 8),
-      Text("Create strong and secure passwords", style: TextStyle(fontSize: 15, color: Colors.grey)),
-    ],
-  );
+  Widget _buildHeader() {
+    final cs = Theme.of(context).colorScheme;
+    final t = AppLocalizations.of(context)!;
 
-  Widget _buildMainCard() => Container(
-    padding: const EdgeInsets.all(24),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.grey.shade300),
-      color: Colors.white,
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
+    return Column(
       children: [
-        PasswordLengthSlider(
-          value: passwordLength,
-          onChanged: (value) => setState(() => passwordLength = value),
+        const SizedBox(height: 20),
+        Text(
+          t.generatorTitle,
+          style:
+          TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: cs.primary),
         ),
-        const SizedBox(height: 16),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.black,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-          ),
-          onPressed: _generatePassword,
-          child: const Text("Generate Password", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+        const SizedBox(height: 8),
+        Text(
+          t.generatorSubtitle,
+          style: TextStyle(fontSize: 15, color: cs.secondary),
         ),
-        if (showGeneratedSection)
-          GeneratedSection(password: generatedPassword, nicknameController: nicknameController),
       ],
-    ),
-  );
+    );
+  }
+
+  Widget _buildMainCard() {
+    final cs = Theme.of(context).colorScheme;
+    final t = AppLocalizations.of(context)!;
+
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: cs.secondary.withOpacity(0.3)),
+        color: cs.surface,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          PasswordLengthSlider(
+            value: passwordLength,
+            onChanged: (value) => setState(() => passwordLength = value),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: cs.primary,
+              foregroundColor: cs.onPrimary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            onPressed: () {
+              _generatePassword();
+
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                scrollToWidget();
+              });
+            },
+            child: Text(
+              t.generatePassword,
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+            ),
+          ),
+          if (showGeneratedSection)
+            GeneratedSection(
+              key: myTargetKey,
+              password: generatedPassword,
+              nicknameController: nicknameController,
+            ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: cs.surface,
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: scrollController,
           child: Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),

@@ -5,6 +5,7 @@ import 'package:password_generator/save_screen/password_card/square_outlined_but
 import 'package:password_generator/save_screen/save_read_function.dart';
 
 import '../../app_navigation_bar/protein_bar.dart';
+import '../../l10n/app_localizations.dart';
 
 class PasswordCard extends StatefulWidget {
   final String password;
@@ -51,83 +52,90 @@ class _PasswordCardState extends State<PasswordCard> {
   }
 
   void _copyPassword(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
     Clipboard.setData(ClipboardData(text: _cleanPassword));
-    proteinBarM(context, "Password Copied!", icon: Icons.check_outlined);
+    proteinBarM(context, t.passwordCopied, icon: Icons.check_outlined);
   }
 
   Future<void> _toggleFavorite() async {
+    final t = AppLocalizations.of(context)!;
+
     setState(() {
       _isFavorite = !_isFavorite;
     });
-    await editPassword(EditType.favorite, widget.passwordId, isFavorite: _isFavorite);
+
+    await editPassword(
+      EditType.favorite,
+      widget.passwordId,
+      isFavorite: _isFavorite,
+    );
+
     if (!mounted) return;
+
     proteinBarM(
       context,
-      _isFavorite ? "Added to Favorites!" : "Removed from Favorites!",
+      _isFavorite ? t.addedToFavorites : t.removedFromFavorites,
       icon: _isFavorite ? Icons.star : Icons.star_border,
     );
   }
 
   void _togglePasswordEdit() {
-    setState(() {
-      _isEditingPassword = !_isEditingPassword;
-    });
+    setState(() => _isEditingPassword = !_isEditingPassword);
   }
 
   void _savePasswordEdit() {
-    setState(() {
-      _isEditingPassword = false;
-    });
+    setState(() => _isEditingPassword = false);
   }
 
   void _toggleNicknameEdit() {
-    setState(() {
-      _isEditingNickname = !_isEditingNickname;
-    });
+    setState(() => _isEditingNickname = !_isEditingNickname);
   }
 
   void _saveNicknameEdit() {
-    setState(() {
-      _isEditingNickname = false;
-    });
+    setState(() => _isEditingNickname = false);
   }
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final t = AppLocalizations.of(context)!;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[300]!),
+        border: Border.all(color: cs.secondary.withOpacity(0.3)),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            Icon(LucideIcons.edit, size: 18, color: Colors.grey[600]),
+            Icon(LucideIcons.edit, size: 18, color: cs.secondary),
             const SizedBox(width: 8),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Nickname section with buttons OUTSIDE and black outline when editing
                   Row(
                     children: [
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.grey[100],
+                            color: cs.surface.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                             border: _isEditingNickname
-                                ? Border.all(color: Colors.black, width: 2.0)  // BLACK outline when editing
+                                ? Border.all(color: cs.primary, width: 2.0)
                                 : null,
                           ),
                           child: _isEditingNickname
                               ? TextField(
                             controller: _nicknameController,
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: cs.primary),
                             decoration: const InputDecoration(
                               isDense: true,
                               border: InputBorder.none,
@@ -139,22 +147,24 @@ class _PasswordCardState extends State<PasswordCard> {
                             onTap: _toggleNicknameEdit,
                             child: Text(
                               widget.passwordName,
-                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: cs.primary),
                             ),
                           ),
                         ),
                       ),
-                      // Buttons OUTSIDE the field, positioned in front
                       if (_isEditingNickname) ...[
                         const SizedBox(width: 8),
                         IconButton(
-                          icon: const Icon(Icons.check, size: 18, color: Colors.black),
+                          icon: Icon(Icons.check, size: 18, color: cs.primary),
                           onPressed: _saveNicknameEdit,
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.close, size: 18, color: Colors.black),
+                          icon: Icon(Icons.close, size: 18, color: cs.primary),
                           onPressed: _toggleNicknameEdit,
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
@@ -162,13 +172,12 @@ class _PasswordCardState extends State<PasswordCard> {
                       ],
                     ],
                   ),
-                  // Removed top length/time row (shown below password)
                 ],
               ),
             ),
           ]),
           const SizedBox(height: 12),
-          // Password section with buttons OUTSIDE and black outline when editing
+
           Row(
             children: [
               Expanded(
@@ -176,16 +185,18 @@ class _PasswordCardState extends State<PasswordCard> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: cs.surface.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
-                    border: _isEditingPassword
-                        ? Border.all(color: Colors.black, width: 2.0)  // BLACK outline when editing
-                        : null,
+                    border:
+                    _isEditingPassword ? Border.all(color: cs.primary, width: 2.0) : null,
                   ),
                   child: _isEditingPassword
                       ? TextField(
                     controller: _passwordController,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: cs.primary),
                     decoration: const InputDecoration(
                       isDense: true,
                       border: InputBorder.none,
@@ -197,22 +208,24 @@ class _PasswordCardState extends State<PasswordCard> {
                     onTap: _togglePasswordEdit,
                     child: Text(
                       _passwordController.text,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: cs.primary),
                     ),
                   ),
                 ),
               ),
-              // Buttons OUTSIDE the field, positioned in front
               if (_isEditingPassword) ...[
                 const SizedBox(width: 8),
                 IconButton(
-                  icon: const Icon(Icons.check, size: 18, color: Colors.black),
+                  icon: Icon(Icons.check, size: 18, color: cs.primary),
                   onPressed: _savePasswordEdit,
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close, size: 18, color: Colors.black),
+                  icon: Icon(Icons.close, size: 18, color: cs.primary),
                   onPressed: _togglePasswordEdit,
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -221,50 +234,55 @@ class _PasswordCardState extends State<PasswordCard> {
             ],
           ),
           const SizedBox(height: 12),
-          // Move length • time under password (Length on left)
+
           Row(
             children: [
               Text(
-                "Length: ${_passwordController.text.length}",
-                style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                "${t.length}: ${_passwordController.text.length}",
+                style: TextStyle(fontSize: 12, color: cs.secondary),
               ),
               const SizedBox(width: 4),
-              Text("•", style: TextStyle(fontSize: 12, color: Colors.grey[500])),
+              Text("•", style: TextStyle(fontSize: 12, color: cs.secondary)),
               const SizedBox(width: 4),
               Text(
                 widget.passwordDateTime,
-                style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                style: TextStyle(fontSize: 12, color: cs.secondary),
               ),
             ],
           ),
+
           const SizedBox(height: 12),
+
           Row(children: [
             Expanded(
-                child: OutlinedButton.icon(
-                  icon: const Icon(Icons.copy, size: 20),
-                  label: const Text(
-                    'Copy',
-                    style: TextStyle(fontWeight: FontWeight.w500),
+              child: OutlinedButton.icon(
+                icon: Icon(Icons.copy, size: 20, color: cs.primary),
+                label: Text(
+                  t.copy,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500, color: cs.primary),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: cs.secondary.withOpacity(0.3)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.grey[300]!),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black87,
-                  ),
-                  onPressed: () => _copyPassword(context),  // <-- Changed this line
-                )
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 14, horizontal: 16),
+                  backgroundColor: cs.surface,
+                ),
+                onPressed: () => _copyPassword(context),
+              ),
             ),
             const SizedBox(width: 8),
+
             SquareOutlinedIconButton(
               icon: LucideIcons.star,
               onPressed: _toggleFavorite,
-              iconColor: _isFavorite ? Colors.amber : Colors.black,
+              iconColor: _isFavorite ? Colors.amber : cs.primary,
             ),
             const SizedBox(width: 8),
+
             SquareOutlinedIconButton(
               icon: LucideIcons.trash2,
               onPressed: () => _deletePassword(context),
@@ -277,31 +295,40 @@ class _PasswordCardState extends State<PasswordCard> {
   }
 
   void _deletePassword(BuildContext context) async {
+    final cs = Theme.of(context).colorScheme;
+    final t = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: const Text('Delete Password'),
-          content: const Text('Are you sure you want to delete this password?'),
+          backgroundColor: cs.surface,
+          title: Text(t.deletePassword,
+              style: TextStyle(color: cs.primary)),
+          content: Text(
+            t.confirmDeletePassword,
+            style: TextStyle(color: cs.secondary),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
+              child: Text(t.cancel, style: TextStyle(color: cs.primary)),
             ),
             TextButton(
               onPressed: () async {
                 Navigator.of(dialogContext).pop();
-                // Add this line to actually delete the password:
                 await deletePassword(widget.passwordId);
+
                 if (context.mounted) {
-                  proteinBarM(context, "Password Deleted!", icon: Icons.delete_outline);
-                  // Add callback to refresh the list
-                  if (widget.onDeleted != null) {
-                    widget.onDeleted!();
-                  }
+                  proteinBarM(context, t.passwordDeleted,
+                      icon: Icons.delete_outline);
+                  widget.onDeleted?.call();
                 }
               },
-              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+              child: Text(
+                t.delete,
+                style: const TextStyle(color: Colors.red),
+              ),
             ),
           ],
         );

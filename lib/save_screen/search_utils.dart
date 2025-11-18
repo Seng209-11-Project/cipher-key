@@ -101,9 +101,3 @@ class SearchUtils {
     return entries;
   }
 }
-
-//// Kullanıcı arama yaptığında
-// var results = SearchUtils.searchPasswords(
-//   allPasswords: allPasswords,
-//   userSearchText: "kullanıcının_yazdığı_her_neyse"
-// );

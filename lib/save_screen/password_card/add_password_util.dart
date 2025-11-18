@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:password_generator/save_screen/save_read_function.dart';
-
-import '../../app_navigation_bar/protein_bar.dart';  // Add this import
+import '../../app_navigation_bar/protein_bar.dart';
 
 void showAddPasswordDialog(BuildContext context, {VoidCallback? onSaved}) {
   final TextEditingController nicknameController = TextEditingController();
@@ -31,9 +30,9 @@ void showAddPasswordDialog(BuildContext context, {VoidCallback? onSaved}) {
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: Colors.grey[300]!),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Colors.black, width: 2),
+                focusedBorder: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  borderSide: BorderSide(color: Colors.black, width: 2),
                 ),
               ),
             ),
@@ -48,9 +47,9 @@ void showAddPasswordDialog(BuildContext context, {VoidCallback? onSaved}) {
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: Colors.grey[300]!),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Colors.black, width: 2),
+                focusedBorder: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  borderSide: BorderSide(color: Colors.black, width: 2),
                 ),
               ),
             ),
@@ -61,52 +60,48 @@ void showAddPasswordDialog(BuildContext context, {VoidCallback? onSaved}) {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.black,
-            ),
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(color: Colors.black)),
           ),
           ElevatedButton(
             onPressed: () async {
               final nickname = nicknameController.text;
               final password = passwordController.text;
 
-              if (password.isNotEmpty) {
-                try {
-                  final DateTime now = DateTime.now();
-                  final String formattedDateTime = '${now.day}/${now.month}/${now.year} ${now.hour}:${now.minute.toString().padLeft(2, '0')}';
-                  String passwordKey = nickname + formattedDateTime;
-
-                  await savePassword(passwordKey, password);
-
-                  Navigator.of(context).pop();
-
-                  // Use protein bar instead of SnackBar
-                  proteinBarM(
-                    context,
-                    nickname.isEmpty
-                        ? 'Password saved!'
-                        : 'Password "$nickname" saved!',
-                    icon: Icons.check_outlined,
-                  );
-
-                  if (onSaved != null) {
-                    onSaved();
-                  }
-                } catch (e) {
-                  // Use protein bar for error as well
-                  proteinBarM(
-                    context,
-                    'Failed to save password',
-                    icon: Icons.error_outline,
-                  );
-                }
-              } else {
-                // Use protein bar for validation error
+              if (password.isEmpty) {
                 proteinBarM(
                   context,
                   'Please enter a password',
                   icon: Icons.warning_amber_rounded,
+                );
+                return;
+              }
+
+              try {
+                final DateTime now = DateTime.now();
+                final String formattedDateTime =
+                    '${now.day}/${now.month}/${now.year} ${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+
+                final String passwordKey = '$nickname$formattedDateTime';
+
+                await savePassword(passwordKey, password);
+
+                // FIRST refresh the SaveScreen
+                if (onSaved != null) onSaved();
+
+                // THEN close the dialog
+                Navigator.of(context).pop();
+
+                // THEN show success message
+                proteinBarM(
+                  context,
+                  'Password saved!',
+                  icon: Icons.check_outlined,
+                );
+              } catch (e) {
+                proteinBarM(
+                  context,
+                  'Failed to save password',
+                  icon: Icons.error_outline,
                 );
               }
             },

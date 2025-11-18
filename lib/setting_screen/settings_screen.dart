@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:password_generator/app_navigation_bar/protein_bar.dart';
+import 'package:password_generator/app_theme/theme_provider.dart';
+import '../generate_screen/utils/password_generator.dart';
 import '../save_screen/save_read_function.dart';
 import '../generate_screen/utils/helpers.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -21,35 +24,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadPrefs();
-  }
-
-  Future<void> _loadPrefs() async {
-    final all = await readPasswords();
-    setState(() {
-      _uppercase = all['pref_uppercase'] != 'false';
-      _lowercase = all['pref_lowercase'] != 'false';
-      _numbers = all['pref_numbers'] != 'false';
-      _symbols = all['pref_symbols'] != 'false';
-    });
-  }
-
-  Future<void> _savePref(String key, bool value) async {
-    await savePassword('pref_$key', value.toString());
-  }
-
-  Future<void> _deleteAll() async {
-    final all = await readPasswords();
-    if (all.isEmpty) {
-      proteinBarM(context, "No passwords to delete", icon: Icons.info);
-      return;
-    }
-
-    for (final key in all.keys) {
-      if (!key.startsWith('pref_')) await deletePassword(key, all[key]!);
-    }
-
-    proteinBarM(context, "${all.length} passwords deleted", icon: Icons.check);
+    // PREF LOGIC REMOVED
   }
 
   @override
@@ -127,7 +102,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         activeTrackColor: Colors.grey.shade400,
         onChanged: (v) => setState(() {
           _isDarkMode = v;
-          proteinBarM(context, v ? "Dark mode enabled" : "Light mode enabled", icon: Icons.lightbulb_outline);
+          context.read<ThemeProvider>().toggleTheme();
         }),
       ),
     ],
@@ -149,7 +124,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         onChanged: (v) async {
           if (v && !await _authenticate()) return;
           setState(() => _requireFingerprint = v);
-          proteinBarM(context, v ? "Fingerprint enabled" : "Fingerprint disabled", icon: Icons.fingerprint);
         },
       ),
     ],
@@ -182,7 +156,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildDataManagement() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text("Permanently delete all saved passwords", style: TextStyle(color: Colors.grey.shade700, fontSize: 14)),
+      Text("Ppermanently delete all saved passwords", style: TextStyle(color: Colors.grey.shade700, fontSize: 14)),
       const SizedBox(height: 16),
       SizedBox(
         width: double.infinity,
@@ -199,23 +173,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ],
   );
 
+  // PREF LOGIC REMOVED — this now ONLY updates UI + charGroups
   Future<void> _updatePref(String key, bool value) async {
     setState(() => _updateState(key, value));
+
     if (![_uppercase, _lowercase, _numbers, _symbols].any((e) => e)) {
       proteinBarM(context, "At least one option required", icon: Icons.warning);
       setState(() => _uppercase = true);
-      await _savePref('uppercase', true);
-      return;
+      charGroups.add(upperChars);
     }
-    await _savePref(key, value);
   }
 
   void _updateState(String key, bool value) {
     switch (key) {
-      case 'uppercase': _uppercase = value; break;
-      case 'lowercase': _lowercase = value; break;
-      case 'numbers': _numbers = value; break;
-      case 'symbols': _symbols = value; break;
+      case 'uppercase':
+        _uppercase = value;
+        value ? charGroups.add(upperChars) : charGroups.remove(upperChars);
+        break;
+
+      case 'lowercase':
+        _lowercase = value;
+        value ? charGroups.add(lowerChars) : charGroups.remove(lowerChars);
+        break;
+
+      case 'numbers':
+        _numbers = value;
+        value ? charGroups.add(numberChars) : charGroups.remove(numberChars);
+        break;
+
+      case 'symbols':
+        _symbols = value;
+        value ? charGroups.add(symbolChars) : charGroups.remove(symbolChars);
+        break;
     }
   }
 
@@ -226,7 +215,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         options: const AuthenticationOptions(biometricOnly: true),
       );
     } catch (e) {
-      proteinBarM(context, "Auth failed", icon: Icons.error);
+      proteinBarM(context, "Auth Failed"  , icon: Icons.error);
       return false;
     }
   }
@@ -255,6 +244,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     ) ?? false;
 
-    if (confirmed && mounted) await _deleteAll();
+    if (confirmed && mounted) await deleteAllPasswords();
+    proteinBarM(context, "Deleted every password!");
   }
 }

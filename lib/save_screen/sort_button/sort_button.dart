@@ -43,7 +43,6 @@ class SortButton extends StatelessWidget {
         const PopupMenuItem<String>(value: 'Oldest', child: Text('Oldest First')),
         const PopupMenuItem<String>(value: 'By Password', child: Text('By Password (A-Z)')),
         const PopupMenuItem<String>(value: 'By Nickname', child: Text('By Nickname (A-Z)')),
-        const PopupMenuItem<String>(value: 'Favorites', child: Text('Favorites First')),
       ],
     );
   }

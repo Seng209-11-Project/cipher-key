@@ -11,7 +11,7 @@ class PasswordCard extends StatefulWidget {
   final String passwordName;
   final String passwordDateTime;
   final String passwordId;
-  final VoidCallback? onDeleted;  // Add this
+  final VoidCallback? onDeleted;
 
   const PasswordCard({
     super.key,
@@ -19,7 +19,7 @@ class PasswordCard extends StatefulWidget {
     required this.passwordName,
     required this.passwordDateTime,
     required this.passwordId,
-    this.onDeleted,  // Add this
+    this.onDeleted,
   });
 
   @override
@@ -292,7 +292,7 @@ class _PasswordCardState extends State<PasswordCard> {
               onPressed: () async {
                 Navigator.of(dialogContext).pop();
                 // Add this line to actually delete the password:
-                await deletePassword(widget.passwordId, widget.password);
+                await deletePassword(widget.passwordId);
                 if (context.mounted) {
                   proteinBarM(context, "Password Deleted!", icon: Icons.delete_outline);
                   // Add callback to refresh the list

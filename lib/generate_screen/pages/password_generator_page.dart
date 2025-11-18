@@ -13,7 +13,7 @@ class PasswordGeneratorPage extends StatefulWidget {
 class _PasswordGeneratorPageState extends State<PasswordGeneratorPage> {
   double passwordLength = 12;
   bool showGeneratedSection = false;
-  String generatedPassword = "Qf?!R1<Xa@tz";
+  String generatedPassword = "";
   final TextEditingController nicknameController = TextEditingController();
 
   void _generatePassword() => setState(() {

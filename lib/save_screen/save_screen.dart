@@ -15,6 +15,11 @@ class _SaveScreenState extends State<SaveScreen> {
   Map<String, String> savedPasswords = {};
   String _currentSortOption = 'Latest';
 
+  /// 🔥 Add this method so other screens can refresh SaveScreen
+  void refreshPasswords() {
+    _loadPasswords();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -38,8 +43,8 @@ class _SaveScreenState extends State<SaveScreen> {
     List<MapEntry<String, String>> entries = savedPasswords.entries.toList();
 
     int parseDateSafe(String key) {
-      // Extract date-time substring like 'd/m/yyyy hh:mm'
-      final RegExp datePattern = RegExp(r"(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?");
+      final RegExp datePattern =
+      RegExp(r"(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?");
       final match = datePattern.firstMatch(key);
       if (match == null) return 0;
       final day = int.tryParse(match.group(1) ?? '') ?? 1;
@@ -63,34 +68,43 @@ class _SaveScreenState extends State<SaveScreen> {
       return value.startsWith('⭐') ? value.substring(1) : value;
     }
 
-    switch (_currentSortOption) {
-      case 'Oldest':
-        entries.sort((a, b) => parseDateSafe(a.key).compareTo(parseDateSafe(b.key)));
-        break;
-      case 'Favorites':
-        entries.sort((a, b) {
-          final aFav = a.value.startsWith('⭐');
-          final bFav = b.value.startsWith('⭐');
-          if (aFav == bFav) {
-            // If both same fav status, sort by Latest within group
-            return parseDateSafe(b.key).compareTo(parseDateSafe(a.key));
-          }
-          return aFav ? -1 : 1; // favorite first
-        });
-        break;
-      case 'By Password':
-        entries.sort((a, b) => cleanValue(a.value).toLowerCase().compareTo(cleanValue(b.value).toLowerCase()));
-        break;
-      case 'By Nickname':
-        entries.sort((a, b) => extractNickname(a.key).toLowerCase().compareTo(extractNickname(b.key).toLowerCase()));
-        break;
-      case 'Latest':
-      default:
-        entries.sort((a, b) => parseDateSafe(b.key).compareTo(parseDateSafe(a.key)));
-        break;
+    List<MapEntry<String, String>> favs =
+    entries.where((e) => e.value.startsWith('⭐')).toList();
+    List<MapEntry<String, String>> nonFavs =
+    entries.where((e) => !e.value.startsWith('⭐')).toList();
+
+    void sortGroup(List<MapEntry<String, String>> list) {
+      switch (_currentSortOption) {
+        case 'Oldest':
+          list.sort(
+                  (a, b) => parseDateSafe(a.key).compareTo(parseDateSafe(b.key)));
+          break;
+        case 'Favorites':
+          list.sort(
+                  (a, b) => parseDateSafe(b.key).compareTo(parseDateSafe(a.key)));
+          break;
+        case 'By Password':
+          list.sort((a, b) => cleanValue(a.value)
+              .toLowerCase()
+              .compareTo(cleanValue(b.value).toLowerCase()));
+          break;
+        case 'By Nickname':
+          list.sort((a, b) => extractNickname(a.key)
+              .toLowerCase()
+              .compareTo(extractNickname(b.key).toLowerCase()));
+          break;
+        case 'Latest':
+        default:
+          list.sort(
+                  (a, b) => parseDateSafe(b.key).compareTo(parseDateSafe(a.key)));
+          break;
+      }
     }
 
-    return entries;
+    sortGroup(favs);
+    sortGroup(nonFavs);
+
+    return [...favs, ...nonFavs];
   }
 
   @override
@@ -117,7 +131,8 @@ class _SaveScreenState extends State<SaveScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -139,28 +154,65 @@ class _SaveScreenState extends State<SaveScreen> {
                         ],
                       ),
                     ),
+
                     const SizedBox(height: 20),
-                    // Display the saved passwords (sorted)
+
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
+                      child: savedPasswords.isEmpty
+                          ? Container(
+                        width: double.infinity,
+                        padding:
+                        const EdgeInsets.symmetric(vertical: 40),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(14),
+                          border:
+                          Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "No saved passwords yet",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              "Generate or add passwords to see them here",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                          : Column(
                         children: _getSortedEntries().map((entry) {
-                          // Split the key to separate name and datetime
                           String fullKey = entry.key;
                           String passwordName = "";
                           String passwordDateTime = "";
 
-                          // Find where the datetime starts (look for pattern like "12/25/2024")
-                          RegExp datePattern = RegExp(r'\d{1,2}/\d{1,2}/\d{4}');
-                          Match? dateMatch = datePattern.firstMatch(fullKey);
+                          RegExp datePattern =
+                          RegExp(r'\d{1,2}/\d{1,2}/\d{4}');
+                          Match? dateMatch =
+                          datePattern.firstMatch(fullKey);
 
                           if (dateMatch != null) {
                             int dateStartIndex = dateMatch.start;
-                            passwordName = fullKey.substring(0, dateStartIndex);
-                            passwordDateTime = fullKey.substring(dateStartIndex);
+                            passwordName = fullKey
+                                .substring(0, dateStartIndex)
+                                .trim();
+                            passwordDateTime = fullKey
+                                .substring(dateStartIndex)
+                                .trim();
                           } else {
-                            // Fallback if no date pattern found
-                            passwordName = fullKey;
+                            passwordName = fullKey.trim();
                             passwordDateTime = "";
                           }
 
@@ -180,14 +232,15 @@ class _SaveScreenState extends State<SaveScreen> {
               ),
             ),
           ),
+
           Align(
             alignment: Alignment.bottomLeft,
             child: Padding(
-                padding: const EdgeInsets.fromLTRB(24.0, 0, 24.0, 40.0),
-                child: SortButton(
-                  currentSortOption: _currentSortOption,
-                  onSortChanged: _onSortChanged,
-                )
+              padding: const EdgeInsets.fromLTRB(24.0, 0, 24.0, 40.0),
+              child: SortButton(
+                currentSortOption: _currentSortOption,
+                onSortChanged: _onSortChanged,
+              ),
             ),
           ),
         ],

@@ -37,7 +37,7 @@ class ManagementWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _pages = [
+    final List<Widget> pages = [
       const PasswordGeneratorPage(),
       const SaveScreen(),
       const SettingsScreen(),
@@ -49,7 +49,7 @@ class ManagementWidget extends StatelessWidget {
           builder: (_, value, context) {
             return IndexedStack(
               index: value,
-              children: _pages,
+              children: pages,
             );
           }
       ),

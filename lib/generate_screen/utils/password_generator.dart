@@ -1,8 +1,28 @@
 import 'dart:math';
 
+final List<String> lowerChars =
+List.generate(26, (i) => String.fromCharCode(i + 97));
+
+final List<String> upperChars =
+List.generate(26, (i) => String.fromCharCode(i + 65));
+
+final List<String> numberChars =
+List.generate(10, (i) => i.toString());
+
+final List<String> symbolChars = [
+  '!', '@', '#', r'$', '%', '^', '&', '*', '(', ')',
+  '_', '-', '+', '=', '<', '>', '?', '/', '\\'
+];
+
+final List<List<String>> charGroups = [
+  lowerChars,
+  upperChars,
+  numberChars,
+  symbolChars,
+];
+
 String generateRandomPassword(int length) {
   final random = Random();
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#\$%^&*()_-+=<>?/';
 
   String password = '';
   String lastChar = '';
@@ -12,11 +32,17 @@ String generateRandomPassword(int length) {
     String newChar;
 
     do {
-      newChar = chars[random.nextInt(chars.length)];
+      // pick a random character group
+      final group = charGroups[random.nextInt(charGroups.length)];
 
-      bool isTripleSameChar = lastChar == newChar && secondLastChar == newChar;
+      // pick a random character from that group
+      newChar = group[random.nextInt(group.length)];
 
-      bool isTripleSameType = _isSameType(lastChar, secondLastChar, newChar);
+      bool isTripleSameChar =
+          lastChar == newChar && secondLastChar == newChar;
+
+      bool isTripleSameType =
+      _isSameType(lastChar, secondLastChar, newChar);
 
       if (!isTripleSameChar && !isTripleSameType) break;
 
@@ -30,19 +56,18 @@ String generateRandomPassword(int length) {
   return password;
 }
 
-bool _isSameType(String char1, String char2, String char3) {
-  if (char1.isEmpty || char2.isEmpty) return false;
+bool _isSameType(String c1, String c2, String c3) {
+  if (c1.isEmpty || c2.isEmpty) return false;
 
-  final type1 = _getCharType(char1);
-  final type2 = _getCharType(char2);
-  final type3 = _getCharType(char3);
-
-  return type1 == type2 && type2 == type3;
+  return _getCharType(c1) ==
+      _getCharType(c2) &&
+      _getCharType(c2) ==
+      _getCharType(c3);
 }
 
-String _getCharType(String char) {
-  if (char.contains(RegExp(r'[a-z]'))) return 'lower';
-  if (char.contains(RegExp(r'[A-Z]'))) return 'upper';
-  if (char.contains(RegExp(r'[0-9]'))) return 'number';
+String _getCharType(String c) {
+  if (lowerChars.contains(c)) return 'lower';
+  if (upperChars.contains(c)) return 'upper';
+  if (numberChars.contains(c)) return 'number';
   return 'symbol';
 }

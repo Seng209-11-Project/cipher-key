@@ -9,14 +9,17 @@ Future<void> savePassword(String passwordName, String password) async {
 }
 
 Future<Map<String, String>> readPasswords() async {
-  Map<String, String> allValues = await storage.readAll();
-  return allValues;
+  return Map<String, String>.from(await storage.readAll());
 }
 
-Future<void> deletePassword(String passwordName, String password) async {
+
+Future<void> deletePassword(String passwordName) async {
   await storage.delete(key: passwordName);
 }
 
+Future<void> deleteAllPasswords() async {
+  await storage.deleteAll();
+}
 
 enum EditType {
   name,

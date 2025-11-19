@@ -360,21 +360,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(t.deleteAllPasswordsHeader,
-            style: TextStyle(color: cs.secondary)),
+        Text(
+          t.deleteAllPasswordsHeader,
+          style: TextStyle(color: cs.secondary),
+        ),
         const SizedBox(height: 16),
-        ElevatedButton.icon(
-          onPressed: _confirmDelete,
-          icon: const Icon(Icons.delete_outline),
-          label: Text(t.deleteAllPasswords,
-              style: const TextStyle(fontWeight: FontWeight.bold)),
-          style: ElevatedButton.styleFrom(
+
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _confirmDelete,
+            style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red.shade600,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
+              elevation: 2,
+              padding: const EdgeInsets.symmetric(vertical: 18),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12))),
-        )
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.delete_outline, size: 20),
+                const SizedBox(width: 10),
+                Text(
+                  t.deleteAllPasswords,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

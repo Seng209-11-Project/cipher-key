@@ -1,0 +1,87 @@
+{
+  "appTitle": "Şifrə Yaradıcı Tətbiqi",
+
+  "navGenerate": "Yarat",
+  "navSaved": "Saxlanılanlar",
+  "navSettings": "Ayarlar",
+
+  "settingsTitle": "Ayarlar",
+  "settingsSubtitle": "Şifrə menecerinizi fərdiləşdirin",
+  "settingsAppearance": "Görünüş",
+  "settingsSecurity": "Təhlükəsizlik",
+  "settingsPasswordGeneration": "Şifrə Yaratma",
+  "settingsDataManagement": "Məlumat İdarəetməsi",
+  "settingsLanguage": "Dil",
+  "selectPreferredLanguage": "İstədiyiniz dili seçin",
+
+  "darkMode": "Qaranlıq Mod",
+  "switchToDarkTheme": "Tünd temaya keç",
+  "switchToLightTheme": "Açıq temaya keç",
+
+  "requireFingerprint": "Barmaq izi tələb et",
+  "fingerprintDescription": "Tətbiq açıldıqda barmaq izi doğrulaması istə",
+
+  "charTypeInstructions": "Daxil ediləcək simvol növlərini seçin",
+  "uppercase": "Böyük Hərflər (A-Z)",
+  "lowercase": "Kiçik Hərflər (a-z)",
+  "numbers": "Rəqəmlər (0-9)",
+  "symbols": "Simvollar (@#$%...)",
+
+  "deleteAllPasswordsHeader": "Bütün saxlanılmış şifrələri daimi sil",
+  "deleteAllPasswords": "Bütün Şifrələri Sil",
+  "deleteAllPasswordsDialogTitle": "Bütün şifrələr silinsin?",
+  "deleteAllPasswordsDialogContent": "{count} saxlanılmış şifrə daimi olaraq silinəcək.",
+  "cancel": "Ləğv et",
+  "deleteAll": "Hamısını Sil",
+  "noPasswordsToDelete": "Silinəcək şifrə yoxdur",
+  "allPasswordsDeleted": "Bütün şifrələr silindi!",
+  "authFailed": "Doğrulama uğursuz oldu",
+  "atLeastOneOptionRequired": "Ən azı bir seçim tələb olunur",
+
+  "addNewPassword": "Yeni Şifrə Əlavə Et",
+  "nickname": "Ləqəb",
+  "enterNickname": "Bu şifrə üçün ləqəb daxil edin",
+  "password": "Şifrə",
+  "enterPassword": "Şifrəni daxil edin",
+  "save": "Yadda saxla",
+  "pleaseEnterPassword": "Zəhmət olmasa şifrə daxil edin",
+  "passwordSaved": "Şifrə saxlanıldı!",
+  "passwordSaveFailed": "Şifrə saxlanıla bilmədi",
+
+  "savedPasswordsTitle": "Saxlanılan Şifrələr",
+  "savedPasswordsSubtitle": "Saxlanılan şifrələrinizi görün və idarə edin",
+  "noSavedPasswords": "Hələ saxlanılan şifrə yoxdur",
+  "generateOrAddPasswords": "Görmək üçün şifrə yaradın və ya əlavə edin",
+
+  "sortLatest": "Ən Yeni",
+  "sortLatestFirst": "Əvvəlcə ən yeni",
+  "sortOldest": "Ən Köhnə",
+  "sortOldestFirst": "Əvvəlcə ən köhnə",
+  "sortByPassword": "Şifrə üzrə",
+  "sortByPasswordAZ": "Şifrə (A-Z)",
+  "sortByNickname": "Ləqəb üzrə",
+  "sortByNicknameAZ": "Ləqəb (A-Z)",
+
+  "copy": "Kopyala",
+  "passwordCopied": "Şifrə kopyalandı!",
+  "addedToFavorites": "Favorilərə əlavə olundu!",
+  "removedFromFavorites": "Favorilərdən çıxarıldı!",
+  "deletePassword": "Şifrəni Sil",
+  "confirmDeletePassword": "Bu şifrəni silmək istədiyinizə əminsiniz?",
+  "delete": "Sil",
+  "passwordDeleted": "Şifrə silindi!",
+
+  "length": "Uzunluq",
+  "editingPassword": "Şifrə redaktə edilir...",
+  "tapToEditPassword": "Düzəliş etmək üçün toxunun",
+
+  "generatorTitle": "Şifrə Yaradıcı",
+  "generatorSubtitle": "Güclü və təhlükəsiz şifrələr yaradın",
+  "passwordLength": "Şifrə Uzunluğu",
+  "generatePassword": "Şifrə Yarat",
+
+  "generatedPassword": "Yaradılan Şifrə",
+  "nicknameOptional": "Ləqəb (istəyə bağlı)",
+  "enterANickname": "Bir ləqəb daxil edin",
+  "giveNicknameMeaning": "Bu şifrə üçün yadda qalan bir ad verin"
+}

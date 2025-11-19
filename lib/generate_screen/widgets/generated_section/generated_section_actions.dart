@@ -6,7 +6,7 @@ import '../../../app_navigation_bar/protein_bar.dart';
 
 void copyButtonOnPressed(BuildContext context, String password) {
   Clipboard.setData(ClipboardData(text: password));
-  proteinBarM(context, AppLocalizations.of(context)!.copy, icon: Icons.check_outlined);
+  proteinBarM(context, AppLocalizations.of(context)!.passwordCopied, icon: Icons.check_outlined);
 }
 
 Future<void> saveButtonOnPressed(
@@ -26,7 +26,7 @@ Future<void> saveButtonOnPressed(
 
   proteinBarM(
     context,
-    AppLocalizations.of(context)!.save,
+    AppLocalizations.of(context)!.passwordSaved,
     icon: Icons.check_outlined,
   );
 

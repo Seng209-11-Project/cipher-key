@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,13 +25,9 @@ void main() {
   );
 }
 
-// ============================================================================
-// MyApp with dynamic locale support
-// ============================================================================
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  /// Allow SettingsScreen to change the language immediately
   static void setLocale(BuildContext context, Locale newLocale) {
     _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
     state?.setLocale(newLocale);
@@ -40,7 +38,25 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale _locale = const Locale("en");
+  Locale? _locale;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Get device locale
+    Locale deviceLocale = ui.window.locale;
+
+    // Extract only the language: "en", "tr", "az", etc.
+    final language = deviceLocale.languageCode;
+
+    // Check if supportedLocales contains this language
+    if (L10n.all.any((loc) => loc.languageCode == language)) {
+      _locale = Locale(language); // normalized locale
+    } else {
+      _locale = const Locale('en'); // fallback
+    }
+  }
 
   void setLocale(Locale locale) {
     setState(() => _locale = locale);
@@ -53,11 +69,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      // current language
       locale: _locale,
       supportedLocales: L10n.all,
 
-      // localization delegates
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -65,7 +79,6 @@ class _MyAppState extends State<MyApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
 
-      // THEME CONFIG
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: themeProvider.themeData == AppTheme.light
@@ -77,9 +90,6 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-// ============================================================================
-// Controls showing the correct screen (Generate / Saved / Settings)
-// ============================================================================
 class ManagementWidget extends StatelessWidget {
   const ManagementWidget({super.key});
 

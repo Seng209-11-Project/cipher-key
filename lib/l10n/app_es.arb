@@ -1,0 +1,87 @@
+{
+  "appTitle": "Aplicación Generadora de Contraseñas",
+
+  "navGenerate": "Generar",
+  "navSaved": "Guardadas",
+  "navSettings": "Ajustes",
+
+  "settingsTitle": "Ajustes",
+  "settingsSubtitle": "Personaliza tu gestor de contraseñas",
+  "settingsAppearance": "Apariencia",
+  "settingsSecurity": "Seguridad",
+  "settingsPasswordGeneration": "Generación de Contraseñas",
+  "settingsDataManagement": "Gestión de Datos",
+  "settingsLanguage": "Idioma",
+  "selectPreferredLanguage": "Selecciona tu idioma preferido",
+
+  "darkMode": "Modo Oscuro",
+  "switchToDarkTheme": "Cambiar al tema oscuro",
+  "switchToLightTheme": "Cambiar al tema claro",
+
+  "requireFingerprint": "Requiere huella digital",
+  "fingerprintDescription": "Solicitar verificación de huella al abrir la aplicación",
+
+  "charTypeInstructions": "Selecciona los tipos de caracteres a incluir",
+  "uppercase": "Mayúsculas (A-Z)",
+  "lowercase": "Minúsculas (a-z)",
+  "numbers": "Números (0-9)",
+  "symbols": "Símbolos (@#$%...)",
+
+  "deleteAllPasswordsHeader": "Eliminar permanentemente todas las contraseñas guardadas",
+  "deleteAllPasswords": "Eliminar Todas",
+  "deleteAllPasswordsDialogTitle": "¿Eliminar todas las contraseñas?",
+  "deleteAllPasswordsDialogContent": "Se eliminarán permanentemente {count} contraseñas guardadas.",
+  "cancel": "Cancelar",
+  "deleteAll": "Eliminar Todo",
+  "noPasswordsToDelete": "No hay contraseñas para eliminar",
+  "allPasswordsDeleted": "¡Todas las contraseñas fueron eliminadas!",
+  "authFailed": "Falló la autenticación",
+  "atLeastOneOptionRequired": "Se requiere al menos una opción",
+
+  "addNewPassword": "Agregar Nueva Contraseña",
+  "nickname": "Alias",
+  "enterNickname": "Ingrese un alias para esta contraseña",
+  "password": "Contraseña",
+  "enterPassword": "Ingrese la contraseña",
+  "save": "Guardar",
+  "pleaseEnterPassword": "Por favor ingrese una contraseña",
+  "passwordSaved": "¡Contraseña guardada!",
+  "passwordSaveFailed": "No se pudo guardar la contraseña",
+
+  "savedPasswordsTitle": "Contraseñas Guardadas",
+  "savedPasswordsSubtitle": "Vea y administre sus contraseñas guardadas",
+  "noSavedPasswords": "Aún no hay contraseñas guardadas",
+  "generateOrAddPasswords": "Genere o agregue contraseñas para verlas",
+
+  "sortLatest": "Más Nuevas",
+  "sortLatestFirst": "Más nuevas primero",
+  "sortOldest": "Más Antiguas",
+  "sortOldestFirst": "Más antiguas primero",
+  "sortByPassword": "Por contraseña",
+  "sortByPasswordAZ": "Contraseña (A-Z)",
+  "sortByNickname": "Por alias",
+  "sortByNicknameAZ": "Alias (A-Z)",
+
+  "copy": "Copiar",
+  "passwordCopied": "¡Contraseña copiada!",
+  "addedToFavorites": "¡Añadido a favoritos!",
+  "removedFromFavorites": "Eliminado de favoritos",
+  "deletePassword": "Eliminar contraseña",
+  "confirmDeletePassword": "¿Está seguro de que desea eliminar esta contraseña?",
+  "delete": "Eliminar",
+  "passwordDeleted": "¡Contraseña eliminada!",
+
+  "length": "Longitud",
+  "editingPassword": "Editando contraseña...",
+  "tapToEditPassword": "Toca para editar",
+
+  "generatorTitle": "Generador de Contraseñas",
+  "generatorSubtitle": "Cree contraseñas fuertes y seguras",
+  "passwordLength": "Longitud de la contraseña",
+  "generatePassword": "Generar contraseña",
+
+  "generatedPassword": "Contraseña generada",
+  "nicknameOptional": "Alias (opcional)",
+  "enterANickname": "Ingrese un alias",
+  "giveNicknameMeaning": "Déle un nombre memorable a esta contraseña"
+}

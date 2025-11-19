@@ -162,21 +162,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(t.settingsLanguage,
-                  style: TextStyle(
-                      color: cs.primary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold)),
+              Text(
+                t.settingsLanguage,
+                style: TextStyle(
+                  color: cs.primary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 4),
-              Text(t.selectPreferredLanguage,
-                  style: TextStyle(color: cs.secondary, fontSize: 14)),
+              Text(
+                t.selectPreferredLanguage,
+                style: TextStyle(color: cs.secondary, fontSize: 14),
+              ),
             ],
           ),
         ),
 
         const SizedBox(width: 12),
 
-        // DROPDOWN BUTTON
         DropdownButtonHideUnderline(
           child: DropdownButton<String>(
             value: _selectedLang,
@@ -186,14 +190,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             style: TextStyle(color: cs.primary, fontSize: 14),
 
             items: const [
-              DropdownMenuItem(
-                value: "en",
-                child: Text("English"),
-              ),
-              DropdownMenuItem(
-                value: "tr",
-                child: Text("Türkçe"),
-              ),
+              DropdownMenuItem(value: "en", child: Text("English")),
+              DropdownMenuItem(value: "tr", child: Text("Türkçe")),
+              DropdownMenuItem(value: "az", child: Text("Azərbaycan")),
+              DropdownMenuItem(value: "ru", child: Text("Русский")),
+              DropdownMenuItem(value: "de", child: Text("Deutsch")),
+              DropdownMenuItem(value: "es", child: Text("Español")),
             ],
 
             onChanged: (value) async {
@@ -202,6 +204,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               setState(() => _selectedLang = value);
               await _savePref("lang", value);
 
+              // Apply the locale globally
               MyApp.setLocale(context, Locale(value));
             },
           ),

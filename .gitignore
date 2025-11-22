@@ -56,3 +56,7 @@ password_generator/macos/Flutter/ephemeral/
 **/build/
 **/ephemeral/
 **/*.pdb
+
+# Android build artifacts
+**/.gradle/
+**/local.properties

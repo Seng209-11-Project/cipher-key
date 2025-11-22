@@ -11,6 +11,21 @@ class SortButton extends StatelessWidget {
     required this.onSortChanged,
   });
 
+  String _getLocalizedSortOption(String option, AppLocalizations t) {
+    switch (option) {
+      case 'Latest':
+        return t.sortLatestFirst;
+      case 'Oldest':
+        return t.sortOldestFirst;
+      case 'By Password':
+        return t.sortByPasswordAZ;
+      case 'By Nickname':
+        return t.sortByNicknameAZ;
+      default:
+        return option;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -43,7 +58,7 @@ class SortButton extends StatelessWidget {
             Icon(Icons.swap_vert, size: 18, color: cs.primary),
             const SizedBox(width: 8),
             Text(
-              currentSortOption, // Already localized in the parent
+              _getLocalizedSortOption(currentSortOption, t),
               style: TextStyle(color: cs.primary),
             ),
           ],

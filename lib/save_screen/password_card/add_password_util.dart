@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:password_generator/save_screen/save_read_function.dart';
+import '../save_read_function.dart';
 import '../../app_navigation_bar/protein_bar.dart';
 import '../../l10n/app_localizations.dart';
 

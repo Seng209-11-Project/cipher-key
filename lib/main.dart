@@ -1,7 +1,7 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_navigation_bar/app_navigation_bar.dart';
 import 'app_theme/app_theme.dart';
@@ -15,12 +15,13 @@ import 'l10n/app_localizations.dart';
 import 'l10n/l10n.dart';
 
 ValueNotifier<int> selectedIndex = ValueNotifier(0);
+ValueNotifier<int> passwordRefreshNotifier = ValueNotifier<int>(0);
 
 void main() {
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
-      child: const MyApp(),
+      child: MyApp(key: MyApp.appStateKey),
     ),
   );
 }
@@ -28,9 +29,18 @@ void main() {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  static final GlobalKey<_MyAppState> appStateKey = GlobalKey<_MyAppState>();
+
   static void setLocale(BuildContext context, Locale newLocale) {
+    // Try to find state from context first
     _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
-    state?.setLocale(newLocale);
+    // If not found, use the global key
+    state ??= appStateKey.currentState;
+    if (state != null) {
+      state.setLocale(newLocale);
+    } else {
+      debugPrint('ERROR: Could not find MyApp state to set locale!');
+    }
   }
 
   @override
@@ -38,28 +48,83 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale? _locale;
+  Locale _locale = const Locale('en'); // Start with default to show app immediately
 
   @override
   void initState() {
     super.initState();
+    _loadLocale(); // Load in background, don't block
+  }
 
-    // Get device locale
-    Locale deviceLocale = ui.window.locale;
+  Future<void> _loadLocale() async {
+    // Load asynchronously but don't block
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedLang = prefs.getString("lang");
 
-    // Extract only the language: "en", "tr", "az", etc.
-    final language = deviceLocale.languageCode;
+      // Check if user has explicitly set a language preference
+      // We use a flag to distinguish between "never set" and "explicitly set"
+      final hasExplicitLanguage = prefs.getBool("lang_explicitly_set") ?? false;
 
-    // Check if supportedLocales contains this language
-    if (L10n.all.any((loc) => loc.languageCode == language)) {
-      _locale = Locale(language); // normalized locale
-    } else {
-      _locale = const Locale('en'); // fallback
+      if (savedLang != null && savedLang.isNotEmpty && mounted) {
+        // Use saved preference - user has set a language
+        setState(() {
+          _locale = Locale(savedLang);
+        });
+        return;
+      }
+      
+      // Only detect OS language on TRUE first launch (when user hasn't explicitly set a language)
+      if (!hasExplicitLanguage && mounted) {
+        final platformDispatcher = WidgetsBinding.instance.platformDispatcher;
+        final deviceLocale = platformDispatcher.locale;
+        final language = deviceLocale.languageCode;
+
+        String langToUse;
+        if (L10n.all.any((loc) => loc.languageCode == language)) {
+          langToUse = language;
+        } else {
+          langToUse = 'en'; // fallback
+        }
+
+        // Save the detected language for future launches (don't await)
+        prefs.setString("lang", langToUse).catchError((e) {
+          debugPrint('Failed to save initial locale: $e');
+        });
+
+        if (mounted) {
+          setState(() {
+            _locale = Locale(langToUse);
+          });
+        }
+      } else if (mounted) {
+        // User has explicitly set a language before, but it's missing - keep default English
+        setState(() {
+          _locale = const Locale('en');
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed to load saved locale: $e');
+      // Keep default English if everything fails
     }
   }
 
   void setLocale(Locale locale) {
-    setState(() => _locale = locale);
+    if (!mounted) return;
+    
+    // Validate that the locale is supported
+    if (!L10n.all.any((loc) => loc.languageCode == locale.languageCode)) {
+      debugPrint('WARNING: Locale ${locale.languageCode} is not supported, falling back to English');
+      locale = const Locale('en');
+    }
+    
+    // Always update if language code is different - update IMMEDIATELY
+    if (_locale.languageCode != locale.languageCode) {
+      debugPrint('Setting locale to: ${locale.languageCode}');
+      setState(() {
+        _locale = locale;
+      });
+    }
   }
 
   @override
@@ -67,6 +132,7 @@ class _MyAppState extends State<MyApp> {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return MaterialApp(
+      key: ValueKey(_locale.languageCode), // Force rebuild when locale changes
       debugShowCheckedModeBanner: false,
 
       locale: _locale,
@@ -95,16 +161,20 @@ class ManagementWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> pages = [
-      const PasswordGeneratorPage(),
-      const SaveScreen(),
-      const SettingsScreen(),
-    ];
-
+    // Get current locale to force rebuild when it changes
+    final currentLocale = Localizations.localeOf(context);
+    
     return Scaffold(
       body: ValueListenableBuilder(
         valueListenable: selectedIndex,
         builder: (_, value, __) {
+          // Rebuild pages when locale changes by using locale in key
+          final List<Widget> pages = [
+            PasswordGeneratorPage(key: ValueKey('gen_${currentLocale.languageCode}')),
+            SaveScreen(key: ValueKey('save_${currentLocale.languageCode}')),
+            SettingsScreen(key: ValueKey('settings_${currentLocale.languageCode}')),
+          ];
+          
           return IndexedStack(
             index: value,
             children: pages,

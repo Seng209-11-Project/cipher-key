@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../l10n/app_localizations.dart';
 import '../utils/password_generator.dart';
 import '../widgets/password_length_slider.dart';
 import '../widgets/generated_section/generated_section.dart';
+import '../../app_navigation_bar/protein_bar.dart';
 
 class PasswordGeneratorPage extends StatefulWidget {
   const PasswordGeneratorPage({super.key});
@@ -30,11 +32,78 @@ class _PasswordGeneratorPageState extends State<PasswordGeneratorPage> {
   bool showGeneratedSection = false;
   String generatedPassword = "";
   final TextEditingController nicknameController = TextEditingController();
+  
+  // Password generation options - loaded from SharedPreferences
+  bool _uppercase = true;
+  bool _lowercase = true;
+  bool _numbers = true;
+  bool _symbols = true;
 
-  void _generatePassword() => setState(() {
-    generatedPassword = generateRandomPassword(passwordLength.toInt());
-    showGeneratedSection = true;
-  });
+  @override
+  void initState() {
+    super.initState();
+    _loadPasswordOptions();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadPasswordOptions();
+    }
+  }
+
+  Future<void> _loadPasswordOptions() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final uppercase = prefs.getBool("uppercase") ?? true;
+      final lowercase = prefs.getBool("lowercase") ?? true;
+      final numbers = prefs.getBool("numbers") ?? true;
+      final symbols = prefs.getBool("symbols") ?? true;
+      
+      if (mounted) {
+        setState(() {
+          _uppercase = uppercase;
+          _lowercase = lowercase;
+          _numbers = numbers;
+          _symbols = symbols;
+        });
+        debugPrint('Password options loaded: uppercase=$uppercase, lowercase=$lowercase, numbers=$numbers, symbols=$symbols');
+      }
+    } catch (e) {
+      debugPrint('Failed to load password options: $e');
+    }
+  }
+
+  void _generatePassword() {
+    // Reload options before generating to ensure we have latest settings
+    _loadPasswordOptions().then((_) {
+      // Ensure at least one option is enabled (following the list logic)
+      if (!_uppercase && !_lowercase && !_numbers && !_symbols) {
+        final t = AppLocalizations.of(context)!;
+        proteinBarM(
+          context,
+          t.atLeastOneOptionRequired,
+          icon: Icons.warning_amber_rounded,
+        );
+        return;
+      }
+      
+      if (mounted) {
+        setState(() {
+          // Use the list-based logic from password_generator.dart with settings
+          debugPrint('Generating password with: uppercase=$_uppercase, lowercase=$_lowercase, numbers=$_numbers, symbols=$_symbols');
+          generatedPassword = generateRandomPassword(
+            passwordLength.toInt(),
+            uppercase: _uppercase,
+            lowercase: _lowercase,
+            numbers: _numbers,
+            symbols: _symbols,
+          );
+          showGeneratedSection = true;
+        });
+      }
+    });
+  }
 
   Widget _buildHeader() {
     final cs = Theme.of(context).colorScheme;
@@ -101,6 +170,14 @@ class _PasswordGeneratorPageState extends State<PasswordGeneratorPage> {
               key: myTargetKey,
               password: generatedPassword,
               nicknameController: nicknameController,
+              onPasswordChanged: (editedPassword) {
+                // Update passwordLength when user edits the password
+                setState(() {
+                  final newLength = editedPassword.length.toDouble().clamp(4.0, 32.0);
+                  passwordLength = newLength;
+                  generatedPassword = editedPassword;
+                });
+              },
             ),
         ],
       ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:password_generator/save_screen/password_card/square_outlined_buttons/square_outlined_buttons.dart';
-import 'package:password_generator/save_screen/save_read_function.dart';
+import 'square_outlined_buttons/square_outlined_buttons.dart';
+import '../save_read_function.dart';
 
 import '../../app_navigation_bar/protein_bar.dart';
 import '../../l10n/app_localizations.dart';
@@ -13,6 +13,8 @@ class PasswordCard extends StatefulWidget {
   final String passwordDateTime;
   final String passwordId;
   final VoidCallback? onDeleted;
+  final ValueChanged<bool>? onFavoriteChanged;
+  final ValueChanged<String>? onNicknameChanged;
 
   const PasswordCard({
     super.key,
@@ -21,6 +23,8 @@ class PasswordCard extends StatefulWidget {
     required this.passwordDateTime,
     required this.passwordId,
     this.onDeleted,
+    this.onFavoriteChanged,
+    this.onNicknameChanged,
   });
 
   @override
@@ -60,22 +64,27 @@ class _PasswordCardState extends State<PasswordCard> {
   Future<void> _toggleFavorite() async {
     final t = AppLocalizations.of(context)!;
 
+    final newFavoriteState = !_isFavorite;
+    
     setState(() {
-      _isFavorite = !_isFavorite;
+      _isFavorite = newFavoriteState;
     });
+
+    // Notify parent immediately for instant UI update
+    widget.onFavoriteChanged?.call(newFavoriteState);
 
     await editPassword(
       EditType.favorite,
       widget.passwordId,
-      isFavorite: _isFavorite,
+      isFavorite: newFavoriteState,
     );
 
     if (!mounted) return;
 
     proteinBarM(
       context,
-      _isFavorite ? t.addedToFavorites : t.removedFromFavorites,
-      icon: _isFavorite ? Icons.star : Icons.star_border,
+      newFavoriteState ? t.addedToFavorites : t.removedFromFavorites,
+      icon: newFavoriteState ? Icons.star : Icons.star_border,
     );
   }
 
@@ -91,8 +100,51 @@ class _PasswordCardState extends State<PasswordCard> {
     setState(() => _isEditingNickname = !_isEditingNickname);
   }
 
-  void _saveNicknameEdit() {
+  Future<void> _saveNicknameEdit() async {
+    final t = AppLocalizations.of(context)!;
+    final newNickname = _nicknameController.text.trim();
+    
+    // If nickname hasn't changed, just exit edit mode
+    if (newNickname == widget.passwordName) {
+      setState(() => _isEditingNickname = false);
+      return;
+    }
+
     setState(() => _isEditingNickname = false);
+
+    // Extract the original datetime from the passwordId to preserve it
+    final RegExp datePattern = RegExp(r'(\d{1,2}/\d{1,2}/\d{4}(?:\s+\d{1,2}:\d{2})?)');
+    final Match? dateMatch = datePattern.firstMatch(widget.passwordId);
+    
+    String formattedDateTime;
+    if (dateMatch != null) {
+      // Preserve the original datetime
+      formattedDateTime = dateMatch.group(1)!;
+    } else {
+      // Fallback to current time if no date found
+      final DateTime now = DateTime.now();
+      formattedDateTime = '${now.day}/${now.month}/${now.year} ${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+    }
+    
+    final String newKey = newNickname.isEmpty ? formattedDateTime : '$newNickname$formattedDateTime';
+
+    // Save to storage
+    await editPassword(
+      EditType.name,
+      widget.passwordId,
+      newName: newNickname,
+    );
+
+    if (!mounted) return;
+
+    // Notify parent immediately with the new key
+    widget.onNicknameChanged?.call(newKey);
+
+    proteinBarM(
+      context,
+      t.passwordSaved,
+      icon: Icons.check_outlined,
+    );
   }
 
   @override
@@ -110,69 +162,79 @@ class _PasswordCardState extends State<PasswordCard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Nickname field
           Row(children: [
-            Icon(LucideIcons.edit, size: 18, color: cs.secondary),
-            const SizedBox(width: 8),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: cs.surface.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                            border: _isEditingNickname
-                                ? Border.all(color: cs.primary, width: 2.0)
-                                : null,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: cs.surface.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: _isEditingNickname
+                      ? Border.all(color: cs.primary, width: 2.0)
+                      : Border.all(color: cs.secondary.withOpacity(0.3), width: 1.0),
+                ),
+                child: Row(
+                  children: [
+                    Icon(LucideIcons.edit, size: 18, color: cs.secondary),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _isEditingNickname
+                          ? TextField(
+                        controller: _nicknameController,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: cs.primary),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                          hintText: "Tap to name",
+                          hintStyle: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: cs.secondary.withOpacity(0.6),
+                            fontStyle: FontStyle.italic,
                           ),
-                          child: _isEditingNickname
-                              ? TextField(
-                            controller: _nicknameController,
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: cs.primary),
-                            decoration: const InputDecoration(
-                              isDense: true,
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.zero,
-                            ),
-                            autofocus: true,
-                          )
-                              : GestureDetector(
-                            onTap: _toggleNicknameEdit,
-                            child: Text(
-                              widget.passwordName,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: cs.primary),
-                            ),
-                          ),
+                        ),
+                        autofocus: true,
+                      )
+                          : GestureDetector(
+                        onTap: _toggleNicknameEdit,
+                        child: Text(
+                          widget.passwordName.isEmpty
+                              ? "Tap to name"
+                              : widget.passwordName,
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: widget.passwordName.isEmpty
+                                  ? cs.secondary.withOpacity(0.6)
+                                  : cs.primary,
+                              fontStyle: widget.passwordName.isEmpty
+                                  ? FontStyle.italic
+                                  : FontStyle.normal),
                         ),
                       ),
-                      if (_isEditingNickname) ...[
-                        const SizedBox(width: 8),
-                        IconButton(
-                          icon: Icon(Icons.check, size: 18, color: cs.primary),
-                          onPressed: _saveNicknameEdit,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.close, size: 18, color: cs.primary),
-                          onPressed: _toggleNicknameEdit,
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                      ],
+                    ),
+                    if (_isEditingNickname) ...[
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: Icon(Icons.check, size: 18, color: cs.primary),
+                        onPressed: _saveNicknameEdit,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close, size: 18, color: cs.primary),
+                        onPressed: _toggleNicknameEdit,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
                     ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ]),
@@ -187,8 +249,9 @@ class _PasswordCardState extends State<PasswordCard> {
                   decoration: BoxDecoration(
                     color: cs.surface.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
-                    border:
-                    _isEditingPassword ? Border.all(color: cs.primary, width: 2.0) : null,
+                    border: _isEditingPassword
+                        ? Border.all(color: cs.primary, width: 2.0)
+                        : Border.all(color: cs.secondary.withOpacity(0.3), width: 1.0),
                   ),
                   child: _isEditingPassword
                       ? TextField(

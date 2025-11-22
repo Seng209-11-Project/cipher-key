@@ -9,11 +9,13 @@ import 'generated_section_widgets.dart';
 class GeneratedSection extends StatefulWidget {
   final String password;
   final TextEditingController nicknameController;
+  final ValueChanged<String>? onPasswordChanged;
 
   const GeneratedSection({
     super.key,
     required this.password,
     required this.nicknameController,
+    this.onPasswordChanged,
   });
 
   @override
@@ -113,12 +115,18 @@ class _GeneratedSectionState extends State<GeneratedSection> {
                     ? TextField(
                   controller: _passwordController,
                   focusNode: _passwordFocusNode,
+                  maxLength: 32,
                   style: passwordTextStyle.copyWith(color: cs.primary),
                   decoration: const InputDecoration(
                     isDense: true,
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.zero,
+                    counterText: '', // Hide character counter
                   ),
+                  onChanged: (value) {
+                    // Notify parent when password is edited
+                    widget.onPasswordChanged?.call(value);
+                  },
                 )
                     : GestureDetector(
                   onTap: _toggleEdit,
@@ -168,7 +176,7 @@ class _GeneratedSectionState extends State<GeneratedSection> {
             GeneratedSectionWidgets.buildActionButton(
               LucideIcons.copy,
               t.copy,
-                  () => copyButtonOnPressed(context, widget.password),
+                  () => copyButtonOnPressed(context, _passwordController.text),
               context: context,
             ),
             const SizedBox(width: 12),
@@ -177,7 +185,7 @@ class _GeneratedSectionState extends State<GeneratedSection> {
               LucideIcons.save,
               t.save,
                   () => saveButtonOnPressed(
-                  context, widget.nicknameController, widget.password),
+                  context, widget.nicknameController, _passwordController.text),
               context: context,
             ),
           ],

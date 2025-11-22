@@ -32,10 +32,21 @@ Future<void> editPassword(EditType type, String oldName, {String newName = "", S
   if (passwordValue != null) {
     switch (type) {
       case EditType.name:
-
-        final DateTime now = DateTime.now();
-        final String formattedDateTime = '${now.day}/${now.month}/${now.year} ${now.hour}:${now.minute.toString().padLeft(2, '0')}';
-        String newKey = newName + formattedDateTime;
+        // Extract the original datetime from the old key
+        final RegExp datePattern = RegExp(r'(\d{1,2}/\d{1,2}/\d{4}(?:\s+\d{1,2}:\d{2})?)');
+        final Match? dateMatch = datePattern.firstMatch(oldName);
+        
+        String formattedDateTime;
+        if (dateMatch != null) {
+          // Preserve the original datetime
+          formattedDateTime = dateMatch.group(1)!;
+        } else {
+          // Fallback to current time if no date found
+          final DateTime now = DateTime.now();
+          formattedDateTime = '${now.day}/${now.month}/${now.year} ${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+        }
+        
+        String newKey = newName.isEmpty ? formattedDateTime : '$newName$formattedDateTime';
         await storage.write(key: newKey, value: passwordValue);
         await storage.delete(key: oldName);
         break;

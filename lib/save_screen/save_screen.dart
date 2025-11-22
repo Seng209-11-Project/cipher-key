@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:password_generator/save_screen/sort_button/sort_button.dart';
-import 'package:password_generator/save_screen/password_card/password_card.dart';
-import 'package:password_generator/save_screen/save_read_function.dart';
-import 'package:password_generator/save_screen/password_card/add_password_util.dart';
-import '../../l10n/app_localizations.dart';
+import 'sort_button/sort_button.dart';
+import 'password_card/password_card.dart';
+import 'save_read_function.dart';
+import 'password_card/add_password_util.dart';
+import '../l10n/app_localizations.dart';
+import '../main.dart' show passwordRefreshNotifier;
 
 class SaveScreen extends StatefulWidget {
   const SaveScreen({super.key});
@@ -24,19 +25,57 @@ class _SaveScreenState extends State<SaveScreen> {
   void initState() {
     super.initState();
     _loadPasswords();
+    // Listen for password refresh notifications
+    passwordRefreshNotifier.addListener(_onPasswordRefresh);
+  }
+
+  void _onPasswordRefresh() {
+    _loadPasswords();
+  }
+
+  @override
+  void dispose() {
+    passwordRefreshNotifier.removeListener(_onPasswordRefresh);
+    super.dispose();
   }
 
   Future<void> _loadPasswords() async {
     final passwords = await readPasswords();
-    setState(() {
-      savedPasswords = passwords;
-    });
+    if (mounted) {
+      setState(() {
+        savedPasswords = passwords;
+      });
+    }
   }
 
   void _onSortChanged(String newValue) {
     setState(() {
       _currentSortOption = newValue;
     });
+  }
+
+  void _onFavoriteChanged(String passwordId, bool isFavorite) {
+    setState(() {
+      String? currentValue = savedPasswords[passwordId];
+      if (currentValue != null) {
+        String cleanPassword = currentValue.startsWith("⭐") ? currentValue.substring(1) : currentValue;
+        savedPasswords[passwordId] = isFavorite ? "⭐$cleanPassword" : cleanPassword;
+      }
+    });
+  }
+
+  void _onNicknameChanged(String oldPasswordId, String newPasswordId) {
+    setState(() {
+      String? currentValue = savedPasswords[oldPasswordId];
+      if (currentValue != null) {
+        // Move the password to the new key immediately
+        savedPasswords[newPasswordId] = currentValue;
+        savedPasswords.remove(oldPasswordId);
+      }
+    });
+    
+    // Reload passwords to ensure consistency (in case key format differs slightly)
+    _loadPasswords();
   }
 
   List<MapEntry<String, String>> _getSortedEntries() {
@@ -215,6 +254,8 @@ class _SaveScreenState extends State<SaveScreen> {
                             passwordDateTime: passwordDateTime,
                             passwordId: entry.key,
                             onDeleted: _loadPasswords,
+                            onFavoriteChanged: (isFavorite) => _onFavoriteChanged(entry.key, isFavorite),
+                            onNicknameChanged: (newKey) => _onNicknameChanged(entry.key, newKey),
                           );
                         }).toList(),
                       ),
@@ -229,7 +270,7 @@ class _SaveScreenState extends State<SaveScreen> {
           Align(
             alignment: Alignment.bottomLeft,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(24.0, 0, 24.0, 40.0),
+              padding: const EdgeInsets.fromLTRB(24.0, 0, 24.0, 8.0),
               child: SortButton(
                 currentSortOption: _currentSortOption,
                 onSortChanged: _onSortChanged,

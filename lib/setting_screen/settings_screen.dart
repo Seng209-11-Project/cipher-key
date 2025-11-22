@@ -31,20 +31,62 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _loadPreferences();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Sync selected language with current locale whenever dependencies change
+    _syncSelectedLangWithLocale();
+  }
+
+  void _syncSelectedLangWithLocale() {
+    if (!mounted) return;
+    final currentLocale = Localizations.localeOf(context);
+    final currentLangCode = currentLocale.languageCode;
+    if (_selectedLang != currentLangCode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {
+            _selectedLang = currentLangCode;
+          });
+        }
+      });
+    }
+  }
+
   // LOAD USER SETTINGS
   Future<void> _loadPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
+    try {
+      final prefs = await SharedPreferences.getInstance();
 
-    setState(() {
-      _selectedLang = prefs.getString("lang") ?? "en";
-      _isDarkMode = prefs.getBool("darkMode") ?? false;
-      _requireFingerprint = prefs.getBool("requireFingerprint") ?? false;
+      // Get saved language - DO NOT save if it doesn't exist, let main.dart handle first launch
+      String savedLang = prefs.getString("lang") ?? "";
+      
+      // If no saved language, just use the current app locale for display (don't save it)
+      if (savedLang.isEmpty && mounted) {
+        final currentLocale = Localizations.localeOf(context);
+        savedLang = currentLocale.languageCode;
+        // DO NOT save it here - main.dart handles first launch detection
+      }
+      
+      // Fallback to English if still empty
+      if (savedLang.isEmpty) {
+        savedLang = "en";
+      }
+      
+      setState(() {
+        _selectedLang = savedLang;
+        _isDarkMode = prefs.getBool("darkMode") ?? false;
+        _requireFingerprint = prefs.getBool("requireFingerprint") ?? false;
 
-      _uppercase = prefs.getBool("uppercase") ?? true;
-      _lowercase = prefs.getBool("lowercase") ?? true;
-      _numbers = prefs.getBool("numbers") ?? true;
-      _symbols = prefs.getBool("symbols") ?? true;
-    });
+        _uppercase = prefs.getBool("uppercase") ?? true;
+        _lowercase = prefs.getBool("lowercase") ?? true;
+        _numbers = prefs.getBool("numbers") ?? true;
+        _symbols = prefs.getBool("symbols") ?? true;
+      });
+
+      // Apply the saved locale if it's different from current
+      // Note: This will be handled by the app's initial load, so we don't need to set it here
+      // Just ensure the dropdown shows the correct value
 
     // APPLY THEME TO PROVIDER
     final provider = context.read<ThemeProvider>();
@@ -53,12 +95,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (_isDarkMode != isCurrentlyDark) {
       provider.toggleTheme();
     }
+    } catch (e) {
+      // If SharedPreferences fails, use defaults
+      debugPrint('Failed to load preferences: $e');
+      // Keep default values already set in initState
+    }
   }
 
   Future<void> _savePref(String key, dynamic value) async {
-    final prefs = await SharedPreferences.getInstance();
-    if (value is bool) prefs.setBool(key, value);
-    if (value is String) prefs.setString(key, value);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (value is bool) await prefs.setBool(key, value);
+      if (value is String) {
+        await prefs.setString(key, value);
+        // If saving language, mark it as explicitly set by user
+        if (key == "lang") {
+          await prefs.setBool("lang_explicitly_set", true);
+        }
+      }
+    } catch (e) {
+      debugPrint('Failed to save preference: $e');
+    }
   }
 
   @override
@@ -183,29 +240,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
         DropdownButtonHideUnderline(
           child: DropdownButton<String>(
+            key: ValueKey(_selectedLang), // Force rebuild when _selectedLang changes
             value: _selectedLang,
             icon: Icon(Icons.arrow_drop_down, color: cs.primary),
             dropdownColor: cs.surface,
             borderRadius: BorderRadius.circular(10),
             style: TextStyle(color: cs.primary, fontSize: 14),
 
-            items: const [
-              DropdownMenuItem(value: "en", child: Text("English")),
-              DropdownMenuItem(value: "tr", child: Text("Türkçe")),
-              DropdownMenuItem(value: "az", child: Text("Azərbaycan")),
-              DropdownMenuItem(value: "ru", child: Text("Русский")),
-              DropdownMenuItem(value: "de", child: Text("Deutsch")),
-              DropdownMenuItem(value: "es", child: Text("Español")),
+            items: [
+              // Order: English, Turkish, Azerbaijani, Russian, Spanish, Deutsch
+              const DropdownMenuItem(value: "en", child: Text("English")),
+              const DropdownMenuItem(value: "tr", child: Text("Türkçe")),
+              const DropdownMenuItem(value: "az", child: Text("Azərbaycan")),
+              const DropdownMenuItem(value: "ru", child: Text("Русский")),
+              const DropdownMenuItem(value: "es", child: Text("Español")),
+              const DropdownMenuItem(value: "de", child: Text("Deutsch")),
             ],
 
             onChanged: (value) async {
               if (value == null) return;
+              if (value == _selectedLang) return; // Already selected
 
-              setState(() => _selectedLang = value);
+              debugPrint('Changing language to: $value');
+              
+              // Update UI immediately
+              if (mounted) {
+                setState(() => _selectedLang = value);
+              }
+              
+              // Apply the locale globally IMMEDIATELY
+              if (mounted) {
+                MyApp.setLocale(context, Locale(value));
+              }
+              
+              // Save preference AND mark as explicitly set by user
               await _savePref("lang", value);
-
-              // Apply the locale globally
-              MyApp.setLocale(context, Locale(value));
             },
           ),
         )
@@ -326,6 +395,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildToggle(String label, bool value, String key) {
     final cs = Theme.of(context).colorScheme;
+    final t = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -341,6 +411,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: value,
             activeColor: cs.primary,
             onChanged: (v) async {
+              // Check if this would disable the last enabled option
+              if (!v) {
+                int enabledCount = 0;
+                if (key != "uppercase" && _uppercase) enabledCount++;
+                if (key != "lowercase" && _lowercase) enabledCount++;
+                if (key != "numbers" && _numbers) enabledCount++;
+                if (key != "symbols" && _symbols) enabledCount++;
+                
+                // If this is the last enabled option, prevent disabling
+                if (enabledCount == 0) {
+                  proteinBarM(
+                    context,
+                    t.atLeastOneOptionRequired,
+                    icon: Icons.warning_amber_rounded,
+                  );
+                  return; // Don't allow disabling
+                }
+              }
+              
               setState(() {
                 if (key == "uppercase") _uppercase = v;
                 if (key == "lowercase") _lowercase = v;

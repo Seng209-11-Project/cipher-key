@@ -12,6 +12,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get appTitle => 'Şifre Oluşturucu Uygulaması';
 
   @override
+  String get authenticateButton => 'Kimliği Doğrula';
+
+  @override
   String get navGenerate => 'Oluştur';
 
   @override

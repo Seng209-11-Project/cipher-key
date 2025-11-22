@@ -1,6 +1,8 @@
 {
   "appTitle": "Aplicación Generadora de Contraseñas",
 
+  "authenticateButton": "Autenticar",
+
   "navGenerate": "Generar",
   "navSaved": "Guardadas",
   "navSettings": "Ajustes",

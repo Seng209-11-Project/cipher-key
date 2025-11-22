@@ -12,6 +12,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appTitle => 'Aplicación Generadora de Contraseñas';
 
   @override
+  String get authenticateButton => 'Autenticar';
+
+  @override
   String get navGenerate => 'Generar';
 
   @override

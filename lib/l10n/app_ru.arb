@@ -1,6 +1,8 @@
 {
   "appTitle": "Приложение для создания паролей",
 
+  "authenticateButton": "Аутентификация",
+
   "navGenerate": "Создать",
   "navSaved": "Сохранённые",
   "navSettings": "Настройки",

@@ -109,6 +109,12 @@ abstract class AppLocalizations {
   /// **'Password Generator App'**
   String get appTitle;
 
+  /// No description provided for @authenticateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Authenticate'**
+  String get authenticateButton;
+
   /// No description provided for @navGenerate.
   ///
   /// In en, this message translates to:

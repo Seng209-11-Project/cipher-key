@@ -12,6 +12,9 @@ class AppLocalizationsAz extends AppLocalizations {
   String get appTitle => 'Şifrə Yaradıcı Tətbiqi';
 
   @override
+  String get authenticateButton => 'Kimliyi Təsdiqlə';
+
+  @override
   String get navGenerate => 'Yarat';
 
   @override

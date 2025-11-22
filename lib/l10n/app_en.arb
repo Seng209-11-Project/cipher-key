@@ -1,6 +1,8 @@
 {
   "appTitle": "Password Generator App",
 
+  "authenticateButton": "Authenticate",
+
   "navGenerate": "Generate",
   "navSaved": "Saved",
   "navSettings": "Settings",

@@ -1,9 +1,12 @@
 {
   "appTitle": "Şifrə Yaradıcı Tətbiqi",
 
+  "authenticateButton": "Kimliyi Təsdiqlə",
+
   "navGenerate": "Yarat",
   "navSaved": "Saxlanılanlar",
   "navSettings": "Ayarlar",
+
 
   "settingsTitle": "Ayarlar",
   "settingsSubtitle": "Şifrə menecerinizi fərdiləşdirin",

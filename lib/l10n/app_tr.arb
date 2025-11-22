@@ -1,6 +1,8 @@
 {
   "appTitle": "Şifre Oluşturucu Uygulaması",
 
+  "authenticateButton": "Kimliği Doğrula",
+
   "navGenerate": "Oluştur",
   "navSaved": "Kaydedilenler",
   "navSettings": "Ayarlar",

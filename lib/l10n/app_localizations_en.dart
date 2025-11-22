@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Password Generator App';
 
   @override
+  String get authenticateButton => 'Authenticate';
+
+  @override
   String get navGenerate => 'Generate';
 
   @override

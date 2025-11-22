@@ -12,6 +12,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get appTitle => 'Приложение для создания паролей';
 
   @override
+  String get authenticateButton => 'Аутентификация';
+
+  @override
   String get navGenerate => 'Создать';
 
   @override

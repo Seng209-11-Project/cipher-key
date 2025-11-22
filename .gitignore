@@ -44,10 +44,15 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Windows build artifacts
+**/windows/flutter/ephemeral/
+**/windows/flutter/*.pdb
+**/*.pdb
+password_generator/windows/flutter/ephemeral/
+password_generator/ios/Flutter/ephemeral/
+password_generator/macos/Flutter/ephemeral/
 
-
-**/.gradle
-**/android/local.properties
+# Build folders
 **/build/
-**/password_generator/build/
-**/password_generator/android/.gradle/
+**/ephemeral/
+**/*.pdb

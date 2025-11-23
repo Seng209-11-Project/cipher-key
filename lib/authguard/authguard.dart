@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:flutter/services.dart';
 
 import '../app_navigation_bar/protein_bar.dart';
 import '../l10n/app_localizations.dart';
@@ -21,7 +22,9 @@ class _AuthGuardState extends State<AuthGuard> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _authenticate();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _authenticate();
+    });
   }
 
   @override
@@ -30,73 +33,112 @@ class _AuthGuardState extends State<AuthGuard> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.paused) {
-      setState(() {
-        _isAuthenticated = false;
-      });
-    }
-    else if (state == AppLifecycleState.resumed) {
-      setState(() {
-        _isAuthenticated = true;
-      });
-    }
-  }
-
-  Future<bool> _authenticate() async {
+  Future<void> _authenticate() async {
     final t = AppLocalizations.of(context)!;
-    final LocalAuthentication auth = LocalAuthentication();
 
     try {
-      return await auth.authenticate(
+      final bool didAuthenticate = await auth.authenticate(
         localizedReason: t.requireFingerprint,
-        options: const AuthenticationOptions(biometricOnly: true),
+        options: const AuthenticationOptions(
+          biometricOnly: true,
+          stickyAuth: true, // Important for Android
+        ),
       );
-    } catch (e) {
-      proteinBarM(context, t.authFailed, icon: Icons.error);
-      return false;
+
+      if (didAuthenticate && mounted) {
+        setState(() {
+          _isAuthenticated = true;
+        });
+      }
+    } on PlatformException catch (e) {
+      debugPrint("Auth Error: $e");
+      if (mounted) {
+        proteinBarM(context, t.authFailed, icon: Icons.error);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-      if (_isAuthenticated) {
-        return widget.child;
-      }
-      else {
-        return Scaffold(
-          backgroundColor: Colors.black12,
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 256,
-                  height: 256,
-                  child: Image.asset("assets/icon.png"),
+    final cs = Theme.of(context).colorScheme;
+
+    if (_isAuthenticated) {
+      return widget.child;
+    } else {
+      return Scaffold(
+        backgroundColor: cs.surface,
+        body: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(55),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: cs.secondary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(24),
                 ),
-                const Text("CipherKey", style: TextStyle(color: Colors.white)),
-                const SizedBox(height: 25),
-                TextButton(
-                  style: ButtonStyle(
-                    foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-                    backgroundColor: WidgetStateProperty.all<Color>(Colors.grey),
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: const BorderSide(color: Colors.grey),
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 128,
+                      height: 128,
+                      child: Image.asset("assets/icon.png"),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      "CipherKey",
+                      style: TextStyle(
+                        color: cs.primary,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  onPressed: _authenticate,
-                  child: Text(AppLocalizations.of(context)!.authenticateButton),
+                    const SizedBox(height: 8),
+                    // Used safe accessor ? in case l10n isn't ready
+                    Text(
+                      AppLocalizations.of(context)?.fingerprintDescription ?? "Authentication required",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: cs.onSurface.withOpacity(0.7),
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: TextButton.icon(
+                        style: ButtonStyle(
+                          foregroundColor:
+                          WidgetStateProperty.all<Color>(cs.onPrimary),
+                          backgroundColor:
+                          WidgetStateProperty.all<Color>(cs.primary),
+                          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            ),
+                          ),
+                        ),
+                        onPressed: _authenticate,
+                        icon: const Icon(Icons.fingerprint),
+                        label: Text(
+                          AppLocalizations.of(context)?.authenticateButton ?? "Authenticate",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        );
-      }
+        ),
+      );
+    }
   }
-      }
+}

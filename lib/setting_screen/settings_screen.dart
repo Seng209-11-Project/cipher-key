@@ -55,7 +55,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // LOAD USER SETTINGS
   Future<void> _loadPreferences() async {
-    try {
       final prefs = await SharedPreferences.getInstance();
 
       // Get saved language - DO NOT save if it doesn't exist, let main.dart handle first launch
@@ -94,11 +93,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     if (_isDarkMode != isCurrentlyDark) {
       provider.toggleTheme();
-    }
-    } catch (e) {
-      // If SharedPreferences fails, use defaults
-      debugPrint('Failed to load preferences: $e');
-      // Keep default values already set in initState
     }
   }
 

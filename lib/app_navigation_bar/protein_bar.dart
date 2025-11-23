@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+OverlayEntry? _currentOverlayEntry;
+
 void proteinBarM(
     BuildContext context,
     String message, {
@@ -9,17 +11,22 @@ void proteinBarM(
       Color? iconColor,
       int duration = 3,
     }) {
-  final overlay = Overlay.of(context);
-  late OverlayEntry overlayEntry;
 
+  if (_currentOverlayEntry != null) {
+    if (_currentOverlayEntry!.mounted) {
+      _currentOverlayEntry!.remove();
+    }
+    _currentOverlayEntry = null;
+  }
+
+  final overlay = Overlay.of(context);
   final cs = Theme.of(context).colorScheme;
 
-  // THEMED COLORS
   final bgColor = backgroundColor ?? cs.surface;
   final txtColor = textColor ?? cs.onSurface;
   final icnColor = iconColor ?? cs.onSurface;
 
-  overlayEntry = OverlayEntry(
+  final newEntry = OverlayEntry(
     builder: (context) => Align(
       alignment: Alignment.bottomCenter,
       child: Padding(
@@ -32,7 +39,11 @@ void proteinBarM(
         child: GestureDetector(
           onVerticalDragEnd: (details) {
             if (details.velocity.pixelsPerSecond.dy > 0) {
-              overlayEntry.remove();
+              // Dismiss current on swipe down
+              if (_currentOverlayEntry != null && _currentOverlayEntry!.mounted) {
+                _currentOverlayEntry!.remove();
+                _currentOverlayEntry = null;
+              }
             }
           },
           child: Material(
@@ -60,12 +71,17 @@ void proteinBarM(
                     Icon(icon, color: icnColor, size: 18),
                     const SizedBox(width: 6),
                   ],
-                  Text(
-                    message,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: txtColor,
-                      fontWeight: FontWeight.w500,
+                  Flexible(
+                    child: Text(
+                      message,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: txtColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2, // Prevent massive text overflow
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -77,9 +93,13 @@ void proteinBarM(
     ),
   );
 
-  overlay.insert(overlayEntry);
+  _currentOverlayEntry = newEntry;
+  overlay.insert(newEntry);
 
   Future.delayed(Duration(seconds: duration), () {
-    if (overlayEntry.mounted) overlayEntry.remove();
+    if (newEntry.mounted && _currentOverlayEntry == newEntry) {
+      newEntry.remove();
+      _currentOverlayEntry = null;
+    }
   });
 }

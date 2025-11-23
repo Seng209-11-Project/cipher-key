@@ -83,7 +83,7 @@ class _SaveScreenState extends State<SaveScreen> {
 
     int parseDateSafe(String key) {
       final RegExp datePattern =
-      RegExp(r"(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?");
+      RegExp(r"(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?");
       final match = datePattern.firstMatch(key);
       if (match == null) return 0;
 
@@ -92,8 +92,9 @@ class _SaveScreenState extends State<SaveScreen> {
       final year = int.tryParse(match.group(3) ?? '') ?? 1970;
       final hour = int.tryParse(match.group(4) ?? '0') ?? 0;
       final minute = int.tryParse(match.group(5) ?? '0') ?? 0;
+      final second = int.tryParse(match.group(6) ?? '0') ?? 0;
 
-      return DateTime(year, month, day, hour, minute).millisecondsSinceEpoch;
+      return DateTime(year, month, day, hour, minute, second).millisecondsSinceEpoch;
     }
 
     String extractNickname(String key) {
@@ -109,6 +110,27 @@ class _SaveScreenState extends State<SaveScreen> {
       return value.startsWith('⭐') ? value.substring(1) : value;
     }
 
+    // For Favorites, show ONLY favorites sorted by date (latest first)
+    if (_currentSortOption == 'Favorites') {
+      List<MapEntry<String, String>> favs =
+      entries.where((e) => e.value.startsWith('⭐')).toList();
+      favs.sort((a, b) => parseDateSafe(b.key).compareTo(parseDateSafe(a.key)));
+      return favs;
+    }
+
+    // For By Password and By Nickname, sort ALL together without separating favorites
+    if (_currentSortOption == 'By Password') {
+      entries.sort((a, b) => cleanValue(a.value).toLowerCase().compareTo(cleanValue(b.value).toLowerCase()));
+      return entries;
+    }
+
+    if (_currentSortOption == 'By Nickname') {
+      entries.sort((a, b) =>
+          extractNickname(a.key).toLowerCase().compareTo(extractNickname(b.key).toLowerCase()));
+      return entries;
+    }
+
+    // For date-based sorts, keep favorites separated and on top
     List<MapEntry<String, String>> favs =
     entries.where((e) => e.value.startsWith('⭐')).toList();
     List<MapEntry<String, String>> nonFavs =
@@ -118,16 +140,6 @@ class _SaveScreenState extends State<SaveScreen> {
       switch (_currentSortOption) {
         case 'Oldest':
           list.sort((a, b) => parseDateSafe(a.key).compareTo(parseDateSafe(b.key)));
-          break;
-        case 'Favorites':
-          list.sort((a, b) => parseDateSafe(b.key).compareTo(parseDateSafe(a.key)));
-          break;
-        case 'By Password':
-          list.sort((a, b) => cleanValue(a.value).toLowerCase().compareTo(cleanValue(b.value).toLowerCase()));
-          break;
-        case 'By Nickname':
-          list.sort((a, b) =>
-              extractNickname(a.key).toLowerCase().compareTo(extractNickname(b.key).toLowerCase()));
           break;
         case 'Latest':
         default:

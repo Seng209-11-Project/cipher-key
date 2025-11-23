@@ -17,6 +17,8 @@ class SortButton extends StatelessWidget {
         return t.sortLatestFirst;
       case 'Oldest':
         return t.sortOldestFirst;
+      case 'Favorites':
+        return 'Favorites';
       case 'By Password':
         return t.sortByPasswordAZ;
       case 'By Nickname':
@@ -77,6 +79,21 @@ class SortButton extends StatelessWidget {
           child: Text(
             t.sortOldestFirst,
             style: TextStyle(color: cs.primary),
+          ),
+        ),
+        PopupMenuItem<String>(
+          value: 'Favorites',
+          child: Row(
+            children: [
+              Text(
+                '⭐ ',
+                style: TextStyle(color: cs.primary),
+              ),
+              Text(
+                'Favorites',
+                style: TextStyle(color: cs.primary),
+              ),
+            ],
           ),
         ),
         PopupMenuItem<String>(

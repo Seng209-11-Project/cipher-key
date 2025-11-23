@@ -97,7 +97,7 @@ void showAddPasswordDialog(BuildContext context, {VoidCallback? onSaved}) {
               try {
                 final DateTime now = DateTime.now();
                 final String formattedDateTime =
-                    '${now.day}/${now.month}/${now.year} ${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+                    '${now.day}/${now.month}/${now.year} ${now.hour}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
 
                 final String passwordKey = '$nickname$formattedDateTime';
 

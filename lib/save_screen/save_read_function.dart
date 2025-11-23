@@ -18,7 +18,15 @@ Future<void> deletePassword(String passwordName) async {
 }
 
 Future<void> deleteAllPasswords() async {
-  await storage.deleteAll();
+  // Read all current data
+  final all = await storage.readAll();
+  
+  // Delete only user passwords (not preferences starting with "pref_")
+  for (final key in all.keys) {
+    if (!key.startsWith("pref_")) {
+      await storage.delete(key: key);
+    }
+  }
 }
 
 enum EditType {
@@ -33,7 +41,7 @@ Future<void> editPassword(EditType type, String oldName, {String newName = "", S
     switch (type) {
       case EditType.name:
         // Extract the original datetime from the old key
-        final RegExp datePattern = RegExp(r'(\d{1,2}/\d{1,2}/\d{4}(?:\s+\d{1,2}:\d{2})?)');
+        final RegExp datePattern = RegExp(r'(\d{1,2}/\d{1,2}/\d{4}(?:\s+\d{1,2}:\d{2}(?::\d{2})?)?)');
         final Match? dateMatch = datePattern.firstMatch(oldName);
         
         String formattedDateTime;
@@ -43,7 +51,7 @@ Future<void> editPassword(EditType type, String oldName, {String newName = "", S
         } else {
           // Fallback to current time if no date found
           final DateTime now = DateTime.now();
-          formattedDateTime = '${now.day}/${now.month}/${now.year} ${now.hour}:${now.minute.toString().padLeft(2, '0')}';
+          formattedDateTime = '${now.day}/${now.month}/${now.year} ${now.hour}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
         }
         
         String newKey = newName.isEmpty ? formattedDateTime : '$newName$formattedDateTime';

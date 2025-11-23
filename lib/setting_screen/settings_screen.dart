@@ -4,7 +4,7 @@ import 'package:password_generator/app_navigation_bar/protein_bar.dart';
 import 'package:password_generator/app_theme/theme_provider.dart';
 import '../app_theme/app_theme.dart';
 import '../l10n/app_localizations.dart';
-import '../main.dart';
+import '../main.dart' show MyApp, passwordRefreshNotifier;
 import '../save_screen/save_read_function.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -540,8 +540,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ) ??
         false;
 
-    if (confirmed && mounted) await deleteAllPasswords();
-
-    proteinBarM(context, t.allPasswordsDeleted);
+    if (confirmed && mounted) {
+      await deleteAllPasswords();
+      // Notify other screens to refresh their password list
+      passwordRefreshNotifier.value++;
+      proteinBarM(context, t.allPasswordsDeleted);
+    }
   }
 }

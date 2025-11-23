@@ -81,10 +81,18 @@ class _AuthGuardState extends State<AuthGuard> with WidgetsBindingObserver {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    Container(
                       width: 128,
                       height: 128,
-                      child: Image.asset("assets/icon.png"),
+                      decoration: BoxDecoration(
+                        color: cs.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: Icon(
+                        Icons.lock_outline,
+                        size: 64,
+                        color: cs.primary,
+                      ),
                     ),
                     const SizedBox(height: 24),
                     Text(
@@ -101,7 +109,7 @@ class _AuthGuardState extends State<AuthGuard> with WidgetsBindingObserver {
                       AppLocalizations.of(context)?.fingerprintDescription ?? "Authentication required",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: cs.onSurface.withOpacity(0.7),
+                        color: cs.secondary,
                         fontSize: 14,
                       ),
                     ),

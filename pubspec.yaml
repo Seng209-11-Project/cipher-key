@@ -1,4 +1,4 @@
-name: cipher_key
+name: password_generator
 description: "A secure password generator app"
 publish_to: 'none'
 

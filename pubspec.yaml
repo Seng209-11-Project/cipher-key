@@ -32,7 +32,11 @@ flutter:
 
   assets:
     - assets/icon.png
-    - assets/words/
+    - assets/words/3l.json
+    - assets/words/4l.json
+    - assets/words/5l.json
+    - assets/words/6l.json
+    - assets/words/7l.json
 
 flutter_launcher_icons:
   android: "launcher_icon"

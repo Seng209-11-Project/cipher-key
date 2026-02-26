@@ -82,21 +82,6 @@ class SortButton extends StatelessWidget {
           ),
         ),
         PopupMenuItem<String>(
-          value: 'Favorites',
-          child: Row(
-            children: [
-              Text(
-                '⭐ ',
-                style: TextStyle(color: cs.primary),
-              ),
-              Text(
-                'Favorites',
-                style: TextStyle(color: cs.primary),
-              ),
-            ],
-          ),
-        ),
-        PopupMenuItem<String>(
           value: 'By Password',
           child: Text(
             t.sortByPasswordAZ,

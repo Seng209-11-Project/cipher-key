@@ -70,7 +70,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> _loadLocale() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final savedLang = prefs.getString("lang");
+        final savedLang = prefs.getString("lang");
       final hasExplicitLanguage = prefs.getBool("lang_explicitly_set") ?? false;
 
       if (savedLang != null && savedLang.isNotEmpty && mounted) {
@@ -126,7 +126,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
-    return MaterialApp(
+    return SafeArea(child: MaterialApp(
       debugShowCheckedModeBanner: false,
 
       locale: _locale,
@@ -148,7 +148,7 @@ class _MyAppState extends State<MyApp> {
       home: widget.requireAuth
           ? AuthGuard(child: ManagementWidget())
           : const ManagementWidget(),
-    );
+    ));
   }
 }
 

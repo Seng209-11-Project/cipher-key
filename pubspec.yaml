@@ -2,7 +2,7 @@ name: password_generator
 description: "A secure password generator app"
 publish_to: 'none'
 
-version: 1.0.0+2
+version: 1.0.0+7
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -32,6 +32,7 @@ flutter:
 
   assets:
     - assets/icon.png
+    - assets/words/
 
 flutter_launcher_icons:
   android: "launcher_icon"

@@ -50,7 +50,6 @@ void showAddPasswordDialog(BuildContext context, {VoidCallback? onSaved}) {
             const SizedBox(height: 16),
             TextField(
               controller: passwordController,
-              obscureText: true,
               style: TextStyle(color: cs.primary),
               decoration: InputDecoration(
                 labelText: t.password,

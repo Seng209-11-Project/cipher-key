@@ -1,11 +1,9 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
 
-// This block reads your key.properties file
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
@@ -14,7 +12,10 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.tozaring.cipher"
-    compileSdk = flutter.compileSdkVersion
+
+    // ✅ MUST be 36 to support your plugins
+    compileSdk = 36
+
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -28,13 +29,18 @@ android {
 
     defaultConfig {
         applicationId = "com.tozaring.cipher"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+
+        // Keep minSdk low (Android 5.0) for wide device support
+        minSdkVersion = flutter.minSdkVersion
+
+        // ✅ UPDATED: Now targeting the latest Android 16 (API 36)
+        // This removes compatibility warnings but enforces Android 16 behaviors.
+        targetSdk = 35
+
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
-    // ✅ ADDED THIS BLOCK: Configures the secure signing key
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
@@ -46,10 +52,7 @@ android {
 
     buildTypes {
         release {
-            // ✅ CHANGED THIS LINE: Uses the 'release' config we just defined above
             signingConfig signingConfigs.release
-            
-            // Optional: Helps shrink app size, but keep false for now to avoid bugs
             minifyEnabled false
             shrinkResources false
         }

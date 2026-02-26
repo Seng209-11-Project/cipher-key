@@ -4,8 +4,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.6.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0"
+        // Compatible with Flutter stable (2025)
+        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22"
     }
 }
 
@@ -17,9 +18,11 @@ allprojects {
 }
 
 rootProject.buildDir = "../build"
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
+
 subprojects {
     project.evaluationDependsOn(":app")
 }

@@ -41,7 +41,7 @@ class _AuthGuardState extends State<AuthGuard> with WidgetsBindingObserver {
         localizedReason: t.requireFingerprint,
         options: const AuthenticationOptions(
           biometricOnly: true,
-          stickyAuth: true, // Important for Android
+          stickyAuth: true, 
         ),
       );
 
@@ -51,7 +51,6 @@ class _AuthGuardState extends State<AuthGuard> with WidgetsBindingObserver {
         });
       }
     } on PlatformException catch (e) {
-      debugPrint("Auth Error: $e");
       if (mounted) {
         proteinBarM(context, t.authFailed, icon: Icons.error);
       }
@@ -88,11 +87,7 @@ class _AuthGuardState extends State<AuthGuard> with WidgetsBindingObserver {
                         color: cs.primary.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      child: Icon(
-                        Icons.lock_outline,
-                        size: 64,
-                        color: cs.primary,
-                      ),
+                      child: Image.asset("assets/icon.png")
                     ),
                     const SizedBox(height: 24),
                     Text(

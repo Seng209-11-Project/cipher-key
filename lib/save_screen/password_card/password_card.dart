@@ -80,12 +80,6 @@ class _PasswordCardState extends State<PasswordCard> {
     );
 
     if (!mounted) return;
-
-    proteinBarM(
-      context,
-      newFavoriteState ? t.addedToFavorites : t.removedFromFavorites,
-      icon: newFavoriteState ? Icons.star : Icons.star_border,
-    );
   }
 
   void _togglePasswordEdit() {

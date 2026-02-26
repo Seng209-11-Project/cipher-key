@@ -13,7 +13,7 @@ class _AppNavigationBarState extends State<AppNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border(
           top: BorderSide(
             color: Colors.black12,
@@ -29,7 +29,7 @@ class _AppNavigationBarState extends State<AppNavigationBar> {
             splashFactory: NoSplash.splashFactory,
           ),
           child: BottomNavigationBar(
-            items: [
+            items: const [
               BottomNavigationBarItem(icon: Icon(LucideIcons.home),label: 'Generate'),
               BottomNavigationBarItem(icon: Icon(LucideIcons.lock),label: 'Saved'),
             ],

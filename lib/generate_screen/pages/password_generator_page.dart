@@ -64,6 +64,7 @@ class _PasswordGeneratorPageState extends State<PasswordGeneratorPage> {
       // Standard Logic
       await _loadPasswordOptions();
       if (![_uppercase, _lowercase, _numbers, _symbols].contains(true)) {
+        if (!mounted) return;
         proteinBarM(context, t.atLeastOneOptionRequired, icon: Icons.warning_amber_rounded);
         return;
       }
@@ -116,7 +117,7 @@ class _PasswordGeneratorPageState extends State<PasswordGeneratorPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   "Memorable Mode",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),

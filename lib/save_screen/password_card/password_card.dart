@@ -62,8 +62,6 @@ class _PasswordCardState extends State<PasswordCard> {
   }
 
   Future<void> _toggleFavorite() async {
-    final t = AppLocalizations.of(context)!;
-
     final newFavoriteState = !_isFavorite;
     
     setState(() {

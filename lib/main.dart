@@ -94,6 +94,7 @@ class _MyAppState extends State<MyApp> {
 
         prefs.setString("lang", langToUse).catchError((e) {
           debugPrint('Failed to save initial locale: $e');
+          return e;
         });
 
         if (mounted) {
@@ -146,7 +147,7 @@ class _MyAppState extends State<MyApp> {
           : ThemeMode.dark,
 
       home: widget.requireAuth
-          ? AuthGuard(child: ManagementWidget())
+          ? const AuthGuard(child: ManagementWidget())
           : const ManagementWidget(),
     ));
   }

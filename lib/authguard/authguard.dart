@@ -49,7 +49,7 @@ class _AuthGuardState extends State<AuthGuard> with WidgetsBindingObserver {
           _isAuthenticated = true;
         });
       }
-    } on PlatformException catch (e) {
+    } on PlatformException {
       if (mounted) {
         proteinBarM(context, t.authFailed, icon: Icons.error);
       }

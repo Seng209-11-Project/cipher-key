@@ -241,14 +241,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             borderRadius: BorderRadius.circular(10),
             style: TextStyle(color: cs.primary, fontSize: 14),
 
-            items: [
+            items: const [
               // Order: English, Turkish, Azerbaijani, Russian, Spanish, Deutsch
-              const DropdownMenuItem(value: "en", child: Text("English")),
-              const DropdownMenuItem(value: "tr", child: Text("Türkçe")),
-              const DropdownMenuItem(value: "az", child: Text("Azərbaycan")),
-              const DropdownMenuItem(value: "ru", child: Text("Русский")),
-              const DropdownMenuItem(value: "es", child: Text("Español")),
-              const DropdownMenuItem(value: "de", child: Text("Deutsch")),
+              DropdownMenuItem(value: "en", child: Text("English")),
+              DropdownMenuItem(value: "tr", child: Text("Türkçe")),
+              DropdownMenuItem(value: "az", child: Text("Azərbaycan")),
+              DropdownMenuItem(value: "ru", child: Text("Русский")),
+              DropdownMenuItem(value: "es", child: Text("Español")),
+              DropdownMenuItem(value: "de", child: Text("Deutsch")),
             ],
 
             onChanged: (value) async {
@@ -315,11 +315,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
         Switch(
           value: _isDarkMode,
-          activeColor: cs.primary,
+          activeThumbColor: cs.primary,
           onChanged: (v) async {
             setState(() => _isDarkMode = v);
             await _savePref("darkMode", v);
 
+            if (!mounted) return;
             final provider = context.read<ThemeProvider>();
             final isCurrentlyDark = provider.themeData == AppTheme.dark;
 
@@ -355,7 +356,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             )),
         Switch(
           value: _requireFingerprint,
-          activeColor: cs.primary,
+          activeThumbColor: cs.primary,
           onChanged: (v) async {
             if (v && !await _authenticate()) return;
 
@@ -403,7 +404,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: cs.primary)),
           Switch(
             value: value,
-            activeColor: cs.primary,
+            activeThumbColor: cs.primary,
             onChanged: (v) async {
               // Check if this would disable the last enabled option
               if (!v) {
@@ -502,6 +503,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // DELETE ALL PASSWORDS
   Future<void> _confirmDelete() async {
+
     final t = AppLocalizations.of(context)!;
 
     final all = await readPasswords();
@@ -509,10 +511,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         all.keys.where((k) => !k.startsWith("pref_")).length;
 
     if (userPasswords == 0) {
+      if (!mounted) return;
       proteinBarM(context, t.noPasswordsToDelete, icon: Icons.info);
       return;
     }
 
+    if (!mounted) return;
     final cs = Theme.of(context).colorScheme;
 
     final confirmed = await showDialog<bool>(
@@ -544,6 +548,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await deleteAllPasswords();
       // Notify other screens to refresh their password list
       passwordRefreshNotifier.value++;
+      if (!mounted) return;
       proteinBarM(context, t.allPasswordsDeleted);
     }
   }

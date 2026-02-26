@@ -1,0 +1,89 @@
+{
+  "appTitle": "Passwort-Generator App",
+
+  "authenticateButton": "Authentifizieren",
+
+  "navGenerate": "Erstellen",
+  "navSaved": "Gespeichert",
+  "navSettings": "Einstellungen",
+
+  "settingsTitle": "Einstellungen",
+  "settingsSubtitle": "Passen Sie Ihren Passwortmanager an",
+  "settingsAppearance": "Aussehen",
+  "settingsSecurity": "Sicherheit",
+  "settingsPasswordGeneration": "Passworterstellung",
+  "settingsDataManagement": "Datenverwaltung",
+  "settingsLanguage": "Sprache",
+  "selectPreferredLanguage": "Wählen Sie Ihre bevorzugte Sprache",
+
+  "darkMode": "Dunkelmodus",
+  "switchToDarkTheme": "Zum dunklen Thema wechseln",
+  "switchToLightTheme": "Zum hellen Thema wechseln",
+
+  "requireFingerprint": "Fingerabdruck erforderlich",
+  "fingerprintDescription": "Beim Öffnen der App Fingerabdrucküberprüfung verlangen",
+
+  "charTypeInstructions": "Wählen Sie die zu verwendenden Zeichenarten",
+  "uppercase": "Großbuchstaben (A-Z)",
+  "lowercase": "Kleinbuchstaben (a-z)",
+  "numbers": "Zahlen (0-9)",
+  "symbols": "Symbole (@#$%...)",
+
+  "deleteAllPasswordsHeader": "Alle gespeicherten Passwörter dauerhaft löschen",
+  "deleteAllPasswords": "Alle Passwörter löschen",
+  "deleteAllPasswordsDialogTitle": "Alle Passwörter löschen?",
+  "deleteAllPasswordsDialogContent": "{count} gespeicherte Passwörter werden dauerhaft gelöscht.",
+  "cancel": "Abbrechen",
+  "deleteAll": "Alles löschen",
+  "noPasswordsToDelete": "Keine Passwörter zum Löschen vorhanden",
+  "allPasswordsDeleted": "Alle Passwörter wurden gelöscht!",
+  "authFailed": "Authentifizierung fehlgeschlagen",
+  "atLeastOneOptionRequired": "Mindestens eine Option erforderlich",
+
+  "addNewPassword": "Neues Passwort hinzufügen",
+  "nickname": "Bezeichnung",
+  "enterNickname": "Geben Sie eine Bezeichnung für dieses Passwort ein",
+  "password": "Passwort",
+  "enterPassword": "Geben Sie das Passwort ein",
+  "save": "Speichern",
+  "pleaseEnterPassword": "Bitte geben Sie ein Passwort ein",
+  "passwordSaved": "Passwort gespeichert!",
+  "passwordSaveFailed": "Passwort konnte nicht gespeichert werden",
+
+  "savedPasswordsTitle": "Gespeicherte Passwörter",
+  "savedPasswordsSubtitle": "Anzeigen und verwalten Sie Ihre gespeicherten Passwörter",
+  "noSavedPasswords": "Noch keine gespeicherten Passwörter",
+  "generateOrAddPasswords": "Erstellen oder hinzufügen, um Passwörter anzuzeigen",
+
+  "sortLatest": "Neueste",
+  "sortLatestFirst": "Neueste zuerst",
+  "sortOldest": "Älteste",
+  "sortOldestFirst": "Älteste zuerst",
+  "sortByPassword": "Nach Passwort",
+  "sortByPasswordAZ": "Passwort (A-Z)",
+  "sortByNickname": "Nach Bezeichnung",
+  "sortByNicknameAZ": "Bezeichnung (A-Z)",
+
+  "copy": "Kopieren",
+  "passwordCopied": "Passwort kopiert!",
+  "addedToFavorites": "Zu Favoriten hinzugefügt!",
+  "removedFromFavorites": "Aus Favoriten entfernt!",
+  "deletePassword": "Passwort löschen",
+  "confirmDeletePassword": "Sind Sie sicher, dass Sie dieses Passwort löschen möchten?",
+  "delete": "Löschen",
+  "passwordDeleted": "Passwort gelöscht!",
+
+  "length": "Länge",
+  "editingPassword": "Passwort wird bearbeitet...",
+  "tapToEditPassword": "Zum Bearbeiten tippen",
+
+  "generatorTitle": "Passwort-Generator",
+  "generatorSubtitle": "Starke und sichere Passwörter erstellen",
+  "passwordLength": "Password-Länge",
+  "generatePassword": "Passwort erstellen",
+
+  "generatedPassword": "Erstelltes Passwort",
+  "nicknameOptional": "Bezeichnung (optional)",
+  "enterANickname": "Geben Sie eine Bezeichnung ein",
+  "giveNicknameMeaning": "Geben Sie diesem Passwort einen einprägsamen Namen"
+}

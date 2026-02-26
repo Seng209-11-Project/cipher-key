@@ -1,0 +1,89 @@
+{
+  "appTitle": "Приложение для создания паролей",
+
+  "authenticateButton": "Аутентификация",
+
+  "navGenerate": "Создать",
+  "navSaved": "Сохранённые",
+  "navSettings": "Настройки",
+
+  "settingsTitle": "Настройки",
+  "settingsSubtitle": "Настройте свой менеджер паролей",
+  "settingsAppearance": "Внешний вид",
+  "settingsSecurity": "Безопасность",
+  "settingsPasswordGeneration": "Генерация паролей",
+  "settingsDataManagement": "Управление данными",
+  "settingsLanguage": "Язык",
+  "selectPreferredLanguage": "Выберите предпочитаемый язык",
+
+  "darkMode": "Тёмный режим",
+  "switchToDarkTheme": "Переключиться на тёмную тему",
+  "switchToLightTheme": "Переключиться на светлую тему",
+
+  "requireFingerprint": "Требовать отпечаток пальца",
+  "fingerprintDescription": "Запрашивать подтверждение отпечатком при запуске приложения",
+
+  "charTypeInstructions": "Выберите типы символов",
+  "uppercase": "Заглавные буквы (A-Z)",
+  "lowercase": "Строчные буквы (a-z)",
+  "numbers": "Цифры (0-9)",
+  "symbols": "Символы (@#$%...)",
+
+  "deleteAllPasswordsHeader": "Удалить все сохранённые пароли навсегда",
+  "deleteAllPasswords": "Удалить все пароли",
+  "deleteAllPasswordsDialogTitle": "Удалить все пароли?",
+  "deleteAllPasswordsDialogContent": "{count} сохранённых паролей будет удалено навсегда.",
+  "cancel": "Отмена",
+  "deleteAll": "Удалить всё",
+  "noPasswordsToDelete": "Нет паролей для удаления",
+  "allPasswordsDeleted": "Все пароли удалены!",
+  "authFailed": "Ошибка аутентификации",
+  "atLeastOneOptionRequired": "Требуется хотя бы один параметр",
+
+  "addNewPassword": "Добавить новый пароль",
+  "nickname": "Название",
+  "enterNickname": "Введите название для этого пароля",
+  "password": "Пароль",
+  "enterPassword": "Введите пароль",
+  "save": "Сохранить",
+  "pleaseEnterPassword": "Пожалуйста, введите пароль",
+  "passwordSaved": "Пароль сохранён!",
+  "passwordSaveFailed": "Не удалось сохранить пароль",
+
+  "savedPasswordsTitle": "Сохранённые пароли",
+  "savedPasswordsSubtitle": "Просматривайте и управляйте сохранёнными паролями",
+  "noSavedPasswords": "Пока нет сохранённых паролей",
+  "generateOrAddPasswords": "Создайте или добавьте пароль, чтобы увидеть список",
+
+  "sortLatest": "Самые новые",
+  "sortLatestFirst": "Сначала новые",
+  "sortOldest": "Самые старые",
+  "sortOldestFirst": "Сначала старые",
+  "sortByPassword": "По паролю",
+  "sortByPasswordAZ": "Пароль (A-Z)",
+  "sortByNickname": "По названию",
+  "sortByNicknameAZ": "Название (A-Z)",
+
+  "copy": "Копировать",
+  "passwordCopied": "Пароль скопирован!",
+  "addedToFavorites": "Добавлено в избранное!",
+  "removedFromFavorites": "Удалено из избранного!",
+  "deletePassword": "Удалить пароль",
+  "confirmDeletePassword": "Вы уверены, что хотите удалить этот пароль?",
+  "delete": "Удалить",
+  "passwordDeleted": "Пароль удалён!",
+
+  "length": "Длина",
+  "editingPassword": "Редактирование пароля...",
+  "tapToEditPassword": "Нажмите, чтобы редактировать",
+
+  "generatorTitle": "Генератор паролей",
+  "generatorSubtitle": "Создавайте надёжные и безопасные пароли",
+  "passwordLength": "Длина пароля",
+  "generatePassword": "Создать пароль",
+
+  "generatedPassword": "Созданный пароль",
+  "nicknameOptional": "Название (необязательно)",
+  "enterANickname": "Введите название",
+  "giveNicknameMeaning": "Дайте этому паролю запоминающееся имя"
+}

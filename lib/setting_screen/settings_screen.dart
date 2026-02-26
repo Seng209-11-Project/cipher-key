@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:password_generator/app_navigation_bar/protein_bar.dart';
-import 'package:password_generator/app_theme/theme_provider.dart';
 import '../app_theme/app_theme.dart';
+import '../app_theme/theme_provider.dart';
 import '../l10n/app_localizations.dart';
 import '../main.dart' show MyApp, passwordRefreshNotifier;
 import '../save_screen/save_read_function.dart';

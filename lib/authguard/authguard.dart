@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter/services.dart';
-
 import '../app_navigation_bar/protein_bar.dart';
 import '../l10n/app_localizations.dart';
 
